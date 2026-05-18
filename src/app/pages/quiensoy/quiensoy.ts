@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-quiensoy',
-  standalone: true, // <-- Esto lo hace un componente moderno y autónomo
-  imports: [], // <-- Al usar el nuevo flujo (@if), ya no necesitás importar CommonModule acá
+  standalone: true, 
+  imports: [], 
   templateUrl: './quiensoy.html',
   styleUrls: ['./quiensoy.css']
 })
@@ -14,7 +14,8 @@ export class QuiensoyComponent implements OnInit {
   error: string | null = null;
   username: string = 'Franconicovicente'; 
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.http.get(`https://api.github.com/users/${this.username}`)
@@ -22,10 +23,12 @@ export class QuiensoyComponent implements OnInit {
         next: (data) => {
           this.perfil = data;
           this.cargando = false;
+          this.cdr.detectChanges(); // Fuerza a Angular a refrescar el HTML con la data de la caché
         },
         error: (err) => {
           this.error = 'No se pudieron cargar los datos del alumno.';
           this.cargando = false;
+          this.cdr.detectChanges(); // También acá por las dudas si falla
           console.error(err);
         }
       });
