@@ -1,1 +1,53 @@
-<p>quiensoy works!</p>
+<div class="quien-soy-container">
+
+  @if (cargando) {
+    <div class="loading">Cargando datos del alumno...</div>
+  } @else if (error) { 
+    <div class="error">{{ error }}</div>
+  } @else if (perfil) {
+    
+    <section class="perfil-github">
+      <h2>Alumno / Desarrollador</h2>
+      
+      <div class="tarjeta-perfil">
+        <img [src]="perfil.avatar_url" alt="Foto de {{ perfil.name }}" class="avatar" />
+        <h3>{{ perfil.name || perfil.login }}</h3>
+        <p class="bio">{{ perfil.bio || 'Sin biografía disponible.' }}</p>
+        <p><strong>Ubicación:</strong> {{ perfil.location || 'No especificada' }}</p>
+        <p><strong>Repositorios públicos:</strong> {{ perfil.public_repos }}</p>
+        
+        <a [href]="perfil.html_url" target="_blank" class="btn-github">
+          Ver Perfil de GitHub
+        </a>
+      </div>
+    </section>
+  }
+
+  <hr />
+
+  <section class="explicacion-juego">
+    
+    
+    <div class="bloque-info">
+      <h3>¿Por qué elegí este juego?</h3>
+      <p>
+        Elegí desarrollar un tetris porque de chico solia jugarlo casi todos los dias. Me gusta su tematica retro, su musica y su estilo.
+      </p>
+    </div>
+
+    <div class="bloque-info">
+      <h3>¿Cómo se juega?</h3>
+      <p>
+        El objetivo principal es hacer la mayor cantidad de puntos posibles acomodando las piezas de una manera correcta, logrando hacer combos.
+      </p>
+      <h4>Controles:</h4>
+      <ul>
+        <li><strong>Flechas:</strong> Movimiento.</li>
+        <li><strong>Z:</strong> Mover pieza a la izquierda.</li>
+        <li><strong>X:</strong> Mover pieza a la derecha.</li>
+        <li><strong>C:</strong> Guardar pieza.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>

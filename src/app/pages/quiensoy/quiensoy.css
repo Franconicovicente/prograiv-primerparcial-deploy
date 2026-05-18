@@ -1,0 +1,49 @@
+.quien-soy-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.tarjeta-perfil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 350px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #fff;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.btn-github {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: #24292e;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.btn-github:hover {
+  background-color: #555;
+}
+
+.bloque-info {
+  background-color: #f9f9f9;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 5px solid #007bff;
+  border-radius: 4px;
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-registro',
@@ -6,4 +6,9 @@ import { Component } from '@angular/core';
   templateUrl: './registro.html',
   styleUrl: './registro.css',
 })
-export class Registro {}
+export class RegistroComponent implements OnInit{
+
+  ngOnInit(): void {
+    
+  }
+}
