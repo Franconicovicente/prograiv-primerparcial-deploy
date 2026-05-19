@@ -1,1 +1,102 @@
-<p>registro works!</p>
+<div class="register-container">
+  <div class="register-card">
+    
+    <h2>Crear Nueva Cuenta</h2>
+    <p class="subtitle">Registrate para empezar a usar la app</p>
+
+    <!-- Nos vinculamos al FormGroup del TS y al método onSubmit() -->
+    <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Campo: Nombre -->
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input 
+          id="nombre" 
+          type="text" 
+          formControlName="nombre" 
+          placeholder="Ej: Juan"
+          [class.is-invalid]="registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched"
+        >
+        @if (registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched) {
+          <small class="error-text">El nombre es obligatorio.</small>
+        }
+      </div>
+
+      <!-- Campo: Apellido -->
+      <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input 
+          id="apellido" 
+          type="text" 
+          formControlName="apellido" 
+          placeholder="Ej: Pérez"
+          [class.is-invalid]="registroForm.get('apellido')?.invalid && registroForm.get('apellido')?.touched"
+        >
+        @if (registroForm.get('apellido')?.invalid && registroForm.get('apellido')?.touched) {
+          <small class="error-text">El apellido es obligatorio.</small>
+        }
+      </div>
+
+      <!-- Campo: Edad -->
+      <div class="form-group">
+        <label for="edad">Edad</label>
+        <input 
+          id="edad" 
+          type="number" 
+          formControlName="edad" 
+          placeholder="Ej: 25"
+          [class.is-invalid]="registroForm.get('edad')?.invalid && registroForm.get('edad')?.touched"
+        >
+        @if (registroForm.get('edad')?.invalid && registroForm.get('edad')?.touched) {
+          <small class="error-text">Ingresá una edad válida.</small>
+        }
+      </div>
+
+      <!-- Campo: Correo Electrónico -->
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input 
+          id="email" 
+          type="email" 
+          formControlName="email" 
+          placeholder="correo@ejemplo.com"
+          [class.is-invalid]="registroForm.get('email')?.invalid && registroForm.get('email')?.touched"
+        >
+        @if (registroForm.get('email')?.invalid && registroForm.get('email')?.touched) {
+          <small class="error-text">Ingresá un correo electrónico válido.</small>
+        }
+      </div>
+
+      <!-- Campo: Contraseña -->
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input 
+          id="password" 
+          type="password" 
+          formControlName="password" 
+          placeholder="Mínimo 6 caracteres"
+          [class.is-invalid]="registroForm.get('password')?.invalid && registroForm.get('password')?.touched"
+        >
+        @if (registroForm.get('password')?.invalid && registroForm.get('password')?.touched) {
+          <small class="error-text">La contraseña debe tener al menos 6 caracteres.</small>
+        }
+      </div>
+
+      <!-- Botón de Envío -->
+      <!-- Se deshabilita automáticamente si el formulario no pasa las validaciones -->
+      <button 
+        type="submit" 
+        class="btn-register" 
+        [disabled]="registroForm.invalid"
+      >
+        Registrar Cuenta
+      </button>
+
+    </form>
+
+    <div class="register-footer">
+      <p>¿Ya tenés cuenta? <a routerLink="/login">Iniciá sesión acá</a></p>
+    </div>
+
+  </div>
+</div>

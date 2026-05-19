@@ -18,7 +18,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/registro/registro').then((m) => m.RegistroComponent)
     },
     {
-        path: ' ',
-        loadComponent: () => import('./pages/quiensoy/quiensoy').then((m) => m.QuiensoyComponent)
+        path: '',
+        loadComponent: () => import('./pages/home/home').then((m) => m.HomeComponent)
+    },
+    {
+        path: '**',
+        loadComponent: () => import('./pages/home/home').then((m) => m.HomeComponent)
     },
 ];
