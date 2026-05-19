@@ -1,36 +1,30 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { GithubService, PerfilSimplificado } from '../../services/github/github'; 
 
 @Component({
   selector: 'app-quiensoy',
-  standalone: true, 
-  imports: [], 
   templateUrl: './quiensoy.html',
   styleUrls: ['./quiensoy.css']
 })
 export class QuiensoyComponent implements OnInit {
-  perfil: any = null;
+  username: string = 'Franconicovicente'; 
+  perfil: PerfilSimplificado | null = null;
   cargando: boolean = true;
   error: string | null = null;
-  username: string = 'Franconicovicente'; 
 
-
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private githubService: GithubService) {}
 
   ngOnInit(): void {
-    this.http.get(`https://api.github.com/users/${this.username}`)
-      .subscribe({
-        next: (data) => {
-          this.perfil = data;
-          this.cargando = false;
-          this.cdr.detectChanges(); // Fuerza a Angular a refrescar el HTML con la data de la caché
-        },
-        error: (err) => {
-          this.error = 'No se pudieron cargar los datos del alumno.';
-          this.cargando = false;
-          this.cdr.detectChanges(); // También acá por las dudas si falla
-          console.error(err);
-        }
-      });
+    this.githubService.obtenerPerfil(this.username).subscribe({
+      next: (data) => {
+        this.perfil = data; 
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = 'No se pudieron cargar los datos del alumno.';
+        this.cargando = false;
+        console.error(err);
+      }
+    });
   }
 }

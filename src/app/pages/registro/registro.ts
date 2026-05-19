@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-registro',
   standalone: true, // ◄ Clave en Angular moderno
-  imports: [ReactiveFormsModule, RouterLink], // ◄ Importamos lo que el HTML necesita
+  imports: [ReactiveFormsModule, RouterLink, NgIf], // ◄ Importamos lo que el HTML necesita
   templateUrl: './registro.html',
   styleUrls: ['./registro.css']
 })

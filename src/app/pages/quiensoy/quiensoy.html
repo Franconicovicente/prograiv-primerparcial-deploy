@@ -11,12 +11,11 @@
       
       <div class="tarjeta-perfil">
         <img [src]="perfil.avatar_url" alt="Foto de {{ perfil.name }}" class="avatar" />
-        <h3>{{ perfil.name || perfil.login }}</h3>
+        <h3>{{ perfil.name}}</h3>
         <p class="bio">{{ perfil.bio || 'Sin biografía disponible.' }}</p>
-        <p><strong>Ubicación:</strong> {{ perfil.location || 'No especificada' }}</p>
         <p><strong>Repositorios públicos:</strong> {{ perfil.public_repos }}</p>
         
-        <a [href]="perfil.html_url" target="_blank" class="btn-github">
+        <a [href]="perfil.avatar_url" target="_blank" class="btn-github">
           Ver Perfil de GitHub
         </a>
       </div>
