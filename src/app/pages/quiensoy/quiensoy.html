@@ -1,52 +1,132 @@
 <div class="quien-soy-container">
 
-  @if (cargando) {
-    <div class="loading">Cargando datos del alumno...</div>
-  } @else if (error) { 
-    <div class="error">{{ error }}</div>
-  } @else if (perfil) {
-    
-    <section class="perfil-github">
-      <h2>Alumno</h2>
-      
-      <div class="tarjeta-perfil">
+  <!-- Hero Section -->
+  <section class="hero-section">
+
+    @if (cargando) {
+      <div class="hero-left skeleton-wrapper">
+        <div class="skeleton skeleton-avatar"></div>
+        <div class="skeleton skeleton-name"></div>
+        <div class="skeleton skeleton-bio"></div>
+      </div>
+    } @else if (error) {
+      <div class="hero-left">
+        <div class="error-msg">{{ error }}</div>
+      </div>
+    } @else if (perfil) {
+      <div class="hero-left">
         <img [src]="perfil.avatar_url" alt="Foto de {{ perfil.name }}" class="avatar" />
-        <h3>{{ perfil.name}}</h3>
-        <p class="bio">{{ perfil.bio || 'Sin biografía disponible.' }}</p>
-        <p><strong>Repositorios públicos:</strong> {{ perfil.public_repos }}</p>
-        
-        <a [href]="perfil.avatar_url" target="_blank" class="btn-github">
+        <h1 class="hero-greeting">Hola, soy<br /><span class="hero-name">{{ perfil.name }}.</span></h1>
+        <p class="hero-tagline">Desarrollador apasionado por crear experiencias únicas, con {{ perfil.public_repos }} repositorios públicos en GitHub.</p>
+        <a [href]="'https://github.com/' + username" target="_blank" class="btn-github">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"/>
+          </svg>
           Ver Perfil de GitHub
         </a>
       </div>
-    </section>
-  }
+    }
 
-  <hr />
+    <div class="hero-right">
+      <div class="trayectoria-card">
+        <h2 class="section-card-title">
+           Mi Juego
+        </h2>
+        <div class="trayectoria-body">
+          <p>Elegí desarrollar un tetris porque de chico solía jugarlo casi todos los días. Me gusta su temática retro, su música y su estilo único que combina simplicidad con desafío.</p>
+          <p>El objetivo principal es hacer la mayor cantidad de puntos posibles acomodando las piezas de manera correcta, logrando combos.</p>
+        </div>
+      </div>
 
-  <section class="explicacion-juego">
-    
-    
-    <div class="bloque-info">
-      <h3>¿Por qué elegí este juego?</h3>
-      <p>
-        Elegí desarrollar un tetris porque de chico solia jugarlo casi todos los dias. Me gusta su tematica retro, su musica y su estilo.
-      </p>
+      <div class="stats-row">
+        <div class="stat-card stat-purple">
+          <span class="stat-number">+15</span>
+          <span class="stat-label">PROYECTOS</span>
+        </div>
+        <div class="stat-card stat-dark">
+          <span class="stat-number">+6</span>
+          <span class="stat-label">LENGUAJES</span>
+        </div>
+        <div class="stat-card stat-cyan">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">AGILE MINDSET</span>
+        </div>
+      </div>
     </div>
 
-    <div class="bloque-info">
-      <h3>¿Cómo se juega?</h3>
-      <p>
-        El objetivo principal es hacer la mayor cantidad de puntos posibles acomodando las piezas de una manera correcta, logrando hacer combos.
-      </p>
-      <h4>Controles:</h4>
-      <ul>
-        <li><strong>Flechas:</strong> Movimiento.</li>
-        <li><strong>Z:</strong> Mover pieza a la izquierda.</li>
-        <li><strong>X:</strong> Mover pieza a la derecha.</li>
-        <li><strong>C:</strong> Guardar pieza.</li>
-      </ul>
+  </section>
+
+  <!-- Competencias Section -->
+  <section class="competencias-section">
+    <div class="competencias-header">
+      <h2>Valores & Competencias</h2>
+      <p>Lo que aporto a cada colaboración profesional.</p>
+    </div>
+
+    <div class="competencias-grid">
+      <div class="comp-card">
+        <div class="comp-icon">🎯</div>
+        <h3>Mentalidad Ágil</h3>
+        <p>Estrategias Lean y Scrum aplicadas a negocios reales para maximizar el ROI.</p>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">👥</div>
+        <h3>Liderazgo</h3>
+        <p>Gestión de equipos multidisciplinarios fomentando la autonomía y responsabilidad.</p>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🚀</div>
+        <h3>Producto</h3>
+        <p>Desde el descubrimiento hasta el lanzamiento, priorizando el impacto al usuario.</p>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">📊</div>
+        <h3>Análisis</h3>
+        <p>Toma de decisiones basada en métricas clave (KPIs, OKRs) y experimentación continua.</p>
+      </div>
     </div>
   </section>
 
+  <!-- Juego Section -->
+  <section class="juego-section">
+    <div class="juego-inner">
+      <h2>Instrucciones del juego</h2>
+      <p class="juego-subtitle"></p>
+
+      <div class="juego-controles">
+        <div class="control-item">
+          <kbd>↑ ↓ ← →</kbd>
+          <span>Movimiento</span>
+        </div>
+        <div class="control-item">
+          <kbd>Z</kbd>
+          <span>Mover izquierda</span>
+        </div>
+        <div class="control-item">
+          <kbd>X</kbd>
+          <span>Mover derecha</span>
+        </div>
+        <div class="control-item">
+          <kbd>C</kbd>
+          <span>Guardar pieza</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  
+      <div class="juego-actions">
+        <button class="btn-contactar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+          </svg>
+          Contactar Conmigo →
+        </button>
+        <button class="btn-cv">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Descargar CV
+        </button>
+      </div>
 </div>

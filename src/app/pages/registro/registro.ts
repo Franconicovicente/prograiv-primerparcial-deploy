@@ -3,16 +3,16 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
 import { NgIf } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
   standalone: true, // ◄ Clave en Angular moderno
-  imports: [ReactiveFormsModule, RouterLink, NgIf], // ◄ Importamos lo que el HTML necesita
+  imports: [ReactiveFormsModule, RouterLink, NgIf], 
   templateUrl: './registro.html',
   styleUrls: ['./registro.css']
 })
 export class RegistroComponent implements OnInit {
-  // Inyecciones modernas con inject()
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -28,19 +28,48 @@ export class RegistroComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
-
-  onSubmit(): void {
+async onSubmit(): Promise<void> {
     if (this.registroForm.valid) {
-      this.authService.registrarUsuario(this.registroForm.value).subscribe({
-        next: (res) => {
-          alert('¡Registrado con éxito bro!');
-          this.router.navigate(['/login']); 
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error al registrar: ' + err.error.error);
-        }
-      });
+      // 1. Sacamos los datos del formulario
+      const { email, password, nombre, apellido, edad } = this.registroForm.value;
+
+      try {
+        this.authService.registrarUsuario({ email, password, nombre, apellido, edad }).subscribe({
+          next: (res) => {
+            Swal.fire({
+            title: '¡Registrado con éxito bro!',
+            text: 'Tu cuenta fue creada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3085d6', 
+            confirmButtonText: 'Ir al Login'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.registroForm.reset();
+              this.router.navigate(['/login']); 
+            }
+          });; 
+          },
+          error: (err) => {
+            Swal.fire({
+            title: 'Error al registrar',
+            text: 'Ocurrió un problema inesperado, intentalo de nuevo.',
+            icon: 'error',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Entendido'
+          });
+          }
+        });
+
+      } catch (error: any) {
+        console.error('Error inesperado:', error);
+        Swal.fire({
+            title: 'Error al registrar',
+            text: 'Ocurrió un problema inesperado, intentalo de nuevo.',
+            icon: 'error',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Entendido'
+          });
+      }
     }
   }
 }
