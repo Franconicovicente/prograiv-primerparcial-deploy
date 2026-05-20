@@ -91,8 +91,13 @@ export class AuthService {
   const { data } = await this.supabase.auth.getUser();
   return data.user?.id ?? null;
 }
+
 get estaLogueado(): boolean {
   return this.usuarioLogueado$.getValue() !== null;
+}
+
+get client() {
+  return this.supabase;
 }
 
 }

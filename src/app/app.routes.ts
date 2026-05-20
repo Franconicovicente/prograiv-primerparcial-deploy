@@ -22,6 +22,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/juegos/juego-ahorcado/juego-ahorcado').then((m) => m.AhorcadoComponent)
     },
     {
+        path: 'juego-mayor-menor',
+        loadComponent: () => import('./pages/juegos/juego-mayor-menor/juego-mayor-menor').then((m) => m.MayorMenorComponent)
+    },
+    {
         path: '',
         loadComponent: () => import('./pages/registro/registro').then((m) => m.RegistroComponent)
     },

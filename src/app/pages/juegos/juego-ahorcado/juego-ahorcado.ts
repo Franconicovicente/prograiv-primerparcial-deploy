@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth';
-import { PartidaService } from '../../../services/partida/partida';
+import { PartidaService } from '../../../services/partida-ahorcado/partida';
 import { RouterLink } from '@angular/router';
 
 const PALABRAS = [

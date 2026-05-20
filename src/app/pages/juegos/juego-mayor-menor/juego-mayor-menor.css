@@ -1,0 +1,415 @@
+/* ===== Variables ===== */
+:host {
+  --bg-card: #161c2a;
+  --bg-card-alt: #1c2438;
+  --bg-input: #1e2740;
+  --border: rgba(255, 255, 255, 0.07);
+  --text-primary: #e8eaf0;
+  --text-secondary: #8892a4;
+  --accent: #8c50ff;
+  --accent-light: #ddd6fe;
+  --success: #34d399;
+  --error-color: #f87171;
+  --card-red: #f87171;
+  --card-black: #e8eaf0;
+  display: block;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ===== Wrapper ===== */
+.game-wrapper {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+/* ===== Header ===== */
+.game-header {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem 1.5rem;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.header-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.stat-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.stat-value.success {
+  color: var(--success);
+}
+
+/* ===== Game Area ===== */
+.game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* ===== Playing Card ===== */
+.card-scene {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.playing-card {
+  width: 160px;
+  height: 224px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.5),
+    0 4px 16px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: cardDeal 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  color: #1a1a2e;
+}
+
+.playing-card--sm {
+  width: 120px;
+  height: 168px;
+  border-radius: 10px;
+}
+
+@keyframes cardDeal {
+  from { opacity: 0; transform: translateY(-30px) rotate(-5deg) scale(0.85); }
+  to   { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+.card-red {
+  color: #c0392b;
+}
+
+.card-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  gap: 1px;
+}
+
+.card-top-left {
+  top: 10px;
+  left: 12px;
+}
+
+.card-bottom-right {
+  bottom: 10px;
+  right: 12px;
+  transform: rotate(180deg);
+}
+
+.card-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: Georgia, serif;
+}
+
+.playing-card--sm .card-val {
+  font-size: 0.9rem;
+}
+
+.card-suit {
+  font-size: 0.8rem;
+}
+
+.playing-card--sm .card-suit {
+  font-size: 0.65rem;
+}
+
+.card-center-suit {
+  font-size: 3.5rem;
+  opacity: 0.85;
+  user-select: none;
+}
+
+.playing-card--sm .card-center-suit {
+  font-size: 2.5rem;
+}
+
+/* ===== Result Indicator ===== */
+.result-indicator {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  border-radius: 99px;
+  animation: popIn 0.25s ease both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.indicator-correct {
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: var(--success);
+}
+
+.indicator-wrong {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: var(--error-color);
+}
+
+/* ===== Choice Buttons ===== */
+.choice-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.choice-question {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.choice-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+  max-width: 340px;
+}
+
+.btn-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem 1rem;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+  border: 1px solid transparent;
+}
+
+.btn-choice svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+}
+
+.btn-mayor {
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: var(--success);
+}
+
+.btn-mayor:hover {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: rgba(52, 211, 153, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(52, 211, 153, 0.2);
+}
+
+.btn-menor {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: var(--error-color);
+}
+
+.btn-menor:hover {
+  background: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(248, 113, 113, 0.2);
+}
+
+.btn-choice:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ===== Waiting / Next Card ===== */
+.waiting-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.next-card-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.preview-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+/* ===== Fin Overlay ===== */
+.fin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 13, 22, 0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadeIn 0.3s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fin-card {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 90%;
+  max-width: 400px;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.fin-icon {
+  font-size: 3rem;
+}
+
+.fin-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.fin-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.fin-stat {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.fin-stat-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent-light);
+  letter-spacing: -0.02em;
+}
+
+.fin-stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.saving-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.btn-reintentar {
+  padding: 0.75rem 2rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  width: 100%;
+}
+
+.btn-reintentar:hover {
+  background: #7a3ef0;
+  transform: translateY(-1px);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .game-header {
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+  }
+
+  .playing-card {
+    width: 140px;
+    height: 196px;
+  }
+
+  .choice-buttons {
+    max-width: 100%;
+  }
+}
