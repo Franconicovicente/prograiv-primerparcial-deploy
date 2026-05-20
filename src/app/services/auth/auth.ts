@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { from, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
+export interface UsuarioSesion {
+  nombre: string;
+  email: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -35,10 +40,10 @@ export class AuthService {
             ])
         ).pipe(
           switchMap((dbResponse) => {
-            // Si hay error
+           
             if (dbResponse.error) return throwError(() => dbResponse.error);
             
-            // Si salio bien, auth validado
+           
             return from([authResponse.data]);
           })
         );
@@ -51,14 +56,35 @@ export class AuthService {
 
     return from(this.supabase.auth.signInWithPassword({ email, password })).pipe(
       switchMap((authResponse) => {
-        // Si las credenciales están mal o el mail no existe, Supabase devuelve un error
+
         if (authResponse.error) {
           return throwError(() => authResponse.error);
         }
-        // Si todo está ok, devuelve la data del usuario y token
+      
         return from([authResponse.data]);
       })
     );
+  }
+
+  private usuarioLogueado$ = new BehaviorSubject<UsuarioSesion | null>(null);
+
+  get session$(): Observable<UsuarioSesion | null> {
+    return this.usuarioLogueado$.asObservable();
+  }
+
+  actualizarUsuarioDesdeSupabase(supabaseUser: any) {
+    if (supabaseUser) {
+      this.usuarioLogueado$.next({
+        nombre: supabaseUser.user_metadata?.['nombre'] || supabaseUser.email.split('@')[0],
+        email: supabaseUser.email
+      });
+    } else {
+      this.usuarioLogueado$.next(null);
+    }
+  }
+
+  cerrarSesion() {
+    this.usuarioLogueado$.next(null); 
   }
 
 

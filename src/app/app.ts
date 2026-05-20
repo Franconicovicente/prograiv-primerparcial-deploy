@@ -1,13 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router'; 
+import { CommonModule } from '@angular/common'; 
+import { GithubService } from './services/github/github'; 
+import { AuthService, UsuarioSesion } from './services/auth/auth';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink], 
+  imports: [RouterOutlet, RouterLink, CommonModule],
   templateUrl: './app.html', 
   styleUrls: ['./app.css']   
 })
-export class AppComponent {
-  title = 'tu-proyecto';
+export class AppComponent implements OnInit {
+  title = 'TETRA';
+  usuario: UsuarioSesion | null = null; 
+  private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
+
+  ngOnInit(): void {
+    this.authService.session$.subscribe(user => {
+      this.usuario = user;
+      this.cdr.detectChanges(); 
+    });
+  }
+
+  onCerrarSesion(): void {
+    this.authService.cerrarSesion();
+  }
 }
