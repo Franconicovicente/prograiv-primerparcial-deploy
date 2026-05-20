@@ -10,9 +10,17 @@
     </nav>
 
     <div class="nav-auth">
-      <a routerLink="/login" routerLinkActive="active" class="btn-login">Ingresar</a>
-      <a routerLink="/registro" routerLinkActive="active" class="btn-register">Registrarse</a>
+  @if (usuario) {
+    <div class="user-logged-info">
+      <span class="nav-icon">👤</span> 
+      <span class="user-name">¡Hola, {{ usuario.nombre }}!</span>
+      <button (click)="onCerrarSesion()" class="btn-logout">Cerrar Sesión</button>
     </div>
+  } @else {
+    <a routerLink="/login" class="btn-login">Ingresar</a>
+    <a routerLink="/registro" class="btn-register">Registrarse</a>
+  }
+</div>
   </div>
 </header>
 

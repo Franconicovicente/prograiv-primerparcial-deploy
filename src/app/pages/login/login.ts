@@ -36,6 +36,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.authService.iniciarSesion(this.loginForm.value).subscribe({
         next: (res) => {
+          this.authService.actualizarUsuarioDesdeSupabase(res.user || res);
           Swal.fire({
             toast: true,
             position: 'top-end',
