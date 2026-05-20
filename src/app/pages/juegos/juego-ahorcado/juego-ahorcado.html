@@ -1,0 +1,83 @@
+<div class="ahorcado-wrapper">
+
+  <!-- Header -->
+  <div class="game-header">
+    <div class="header-stat">
+      <span class="stat-label">Tiempo</span>
+      <span class="stat-value">{{ tiempoFormateado }}</span>
+    </div>
+    <div class="header-stat">
+      <span class="stat-label">Errores</span>
+      <span class="stat-value" [class.stat-danger]="errores >= 4">{{ errores }} / {{ maxErrores }}</span>
+    </div>
+    <div class="header-stat">
+      <span class="stat-label">Letras usadas</span>
+      <span class="stat-value">{{ letrasAdivinadas.size }}</span>
+    </div>
+  </div>
+
+  <!-- Game area -->
+  <div class="game-area">
+
+    <!-- Dibujo del ahorcado (SVG) -->
+    <div class="gallows-container">
+      <svg viewBox="0 0 200 220" class="gallows-svg" xmlns="http://www.w3.org/2000/svg">
+        <!-- Estructura -->
+        <line x1="20" y1="210" x2="180" y2="210" stroke-width="4" stroke-linecap="round"/>
+        <line x1="60" y1="210" x2="60" y2="20"  stroke-width="4" stroke-linecap="round"/>
+        <line x1="60" y1="20"  x2="130" y2="20" stroke-width="4" stroke-linecap="round"/>
+        <line x1="130" y1="20" x2="130" y2="45" stroke-width="4" stroke-linecap="round"/>
+
+        <!-- Cabeza -->
+        <circle *ngIf="partes[0]" cx="130" cy="60" r="16" fill="none" stroke-width="3" class="body-part"/>
+        <!-- Cuerpo -->
+        <line  *ngIf="partes[1]" x1="130" y1="76" x2="130" y2="130" stroke-width="3" stroke-linecap="round" class="body-part"/>
+        <!-- Brazo izq -->
+        <line  *ngIf="partes[2]" x1="130" y1="90" x2="105" y2="115" stroke-width="3" stroke-linecap="round" class="body-part"/>
+        <!-- Brazo der -->
+        <line  *ngIf="partes[3]" x1="130" y1="90" x2="155" y2="115" stroke-width="3" stroke-linecap="round" class="body-part"/>
+        <!-- Pierna izq -->
+        <line  *ngIf="partes[4]" x1="130" y1="130" x2="105" y2="165" stroke-width="3" stroke-linecap="round" class="body-part"/>
+        <!-- Pierna der -->
+        <line  *ngIf="partes[5]" x1="130" y1="130" x2="155" y2="165" stroke-width="3" stroke-linecap="round" class="body-part"/>
+      </svg>
+    </div>
+
+    <!-- Palabra -->
+    <div class="word-area">
+      <div class="word-display">
+        <span
+          *ngFor="let letra of palabraVisible"
+          class="letter-slot"
+          [class.letter-revealed]="letra !== '_'"
+        >{{ letra }}</span>
+      </div>
+
+      <!-- Mensaje final -->
+      <div *ngIf="estado !== 'jugando'" class="result-message" [class.result-win]="estado === 'ganó'" [class.result-lose]="estado === 'perdió'">
+        <span *ngIf="estado === 'ganó'">🎉 ¡Ganaste!</span>
+        <span *ngIf="estado === 'perdió'">💀 Perdiste. Era: <strong>{{ palabra }}</strong></span>
+        <span *ngIf="guardando" class="saving-text">Guardando partida...</span>
+        <button class="btn-reintentar" (click)="iniciarPartida()">
+          Jugar de nuevo
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Teclado de letras -->
+  <div class="keyboard" [class.keyboard-disabled]="estado !== 'jugando'">
+    <button
+      *ngFor="let letra of letras"
+      class="key"
+      [class.key-error]="esError(letra)"
+      [class.key-hit]="esAcierto(letra)"
+      [disabled]="estaUsada(letra) || estado !== 'jugando'"
+      (click)="seleccionarLetra(letra)"
+    >
+      {{ letra }}
+    </button>
+  </div>
+
+</div>

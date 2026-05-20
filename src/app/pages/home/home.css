@@ -151,6 +151,12 @@
   margin-top: 0.25rem;
   transition: background 0.2s, border-color 0.2s;
 }
+.btn-jugar:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: all !important; /* para que el title/tooltip se vea igual */
+}
+
 
 .btn-jugar svg {
   width: 14px;

@@ -87,5 +87,12 @@ export class AuthService {
     this.usuarioLogueado$.next(null); 
   }
 
+  async getUserId(): Promise<string | null> {
+  const { data } = await this.supabase.auth.getUser();
+  return data.user?.id ?? null;
+}
+get estaLogueado(): boolean {
+  return this.usuarioLogueado$.getValue() !== null;
+}
 
 }
