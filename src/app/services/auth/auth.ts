@@ -7,7 +7,6 @@ import { switchMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
-  // Poné tus credenciales reales acá si no las tenías puestas
   private supabase: SupabaseClient = createClient('https://bscfusqgtnusravgrmyf.supabase.co', 
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzY2Z1c3FndG51c3JhdmdybXlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNjQzMTQsImV4cCI6MjA5NDc0MDMxNH0.iNZ36fzmhpJfskGrsRXTUyEXeV49Ig8PoZAXxhGa1Ds');
 
@@ -36,10 +35,10 @@ export class AuthService {
             ])
         ).pipe(
           switchMap((dbResponse) => {
-            // Si falla la inserción en la tabla pública por las políticas o datos
+            // Si hay error
             if (dbResponse.error) return throwError(() => dbResponse.error);
             
-            // Si todo salió joya, retornamos la data del auth exitoso
+            // Si salio bien, auth validado
             return from([authResponse.data]);
           })
         );
@@ -50,14 +49,13 @@ export class AuthService {
   iniciarSesion(credenciales: any): Observable<any> {
     const { email, password } = credenciales;
 
-    // Le pegamos directo a la autenticación de Supabase
     return from(this.supabase.auth.signInWithPassword({ email, password })).pipe(
       switchMap((authResponse) => {
         // Si las credenciales están mal o el mail no existe, Supabase devuelve un error
         if (authResponse.error) {
           return throwError(() => authResponse.error);
         }
-        // Si todo está ok, devolvemos la data del usuario y token
+        // Si todo está ok, devuelve la data del usuario y token
         return from([authResponse.data]);
       })
     );
