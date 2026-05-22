@@ -83,13 +83,14 @@ export class AuthService {
     }
   }
 
-  cerrarSesion() {
+  async cerrarSesion(): Promise<void>{
+    await this.supabase.auth.signOut();
     this.usuarioLogueado$.next(null); 
   }
 
   async getUserId(): Promise<string | null> {
-  const { data } = await this.supabase.auth.getUser();
-  return data.user?.id ?? null;
+  const { data } = await this.supabase.auth.getSession();
+  return data.session?.user?.id ?? null;
 }
 
 get estaLogueado(): boolean {

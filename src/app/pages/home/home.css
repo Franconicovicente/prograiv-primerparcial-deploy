@@ -169,40 +169,16 @@
   color: var(--accent-light);
 }
 
-/* ===== FILOSOFÍA ===== */
-.filosofia-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-  padding: 5rem 4rem;
-  background: var(--bg);
+/* ===== chat ===== */
+.chat-section {
+  background: #0b0f1a;
+  padding: 4rem;
 }
-
-.filosofia-text {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.chat-section app-chat-global {
+  display: block;
+  max-width: 860px;
+  margin: 0 auto;
 }
-
-.filosofia-text h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.03em;
-}
-
-.filosofia-text p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.75;
-  margin: 0;
-}
-
-.filosofia-text strong {
-  color: var(--text-primary);
-}
-
 
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
