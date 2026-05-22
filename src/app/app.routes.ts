@@ -26,6 +26,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/juegos/juego-mayor-menor/juego-mayor-menor').then((m) => m.MayorMenorComponent)
     },
     {
+        path: 'juego-preguntados',
+        loadComponent: () => import('./pages/juegos/juego-preguntados/juego-preguntados/juego-preguntados').then((m) => m.PreguntadosComponent)
+    },
+    {
         path: '',
         loadComponent: () => import('./pages/registro/registro').then((m) => m.RegistroComponent)
     },

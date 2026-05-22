@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject, NgZone, ChangeDetectorRef } from 
 import { NgIf, NgClass } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth';
 import { PartidaMayorMenorService } from '../../../services/partida-mayor-menor/partida-mayor-menor';
+import { Router } from '@angular/router';
 
 export interface Carta {
   valor: number;
@@ -37,7 +38,8 @@ function generarBaraja(): Carta[] {
 export class MayorMenorComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private partidaService = inject(PartidaMayorMenorService);
-
+  private router = inject(Router)
+  
   // Baraja y cartas
   private baraja: Carta[] = [];
   cartaActual: Carta | null = null;
@@ -183,6 +185,10 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalo);
       this.intervalo = null;
     }
+  }
+
+  salir(){
+    this.router.navigate(['/home'])
   }
 
   // ── Getters ──────────────────────────────

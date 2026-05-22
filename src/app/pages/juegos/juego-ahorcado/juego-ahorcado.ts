@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth';
 import { PartidaService } from '../../../services/partida-ahorcado/partida';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 const PALABRAS = [
   'javascript', 'angular', 'supabase', 'componente', 'servicio',
@@ -24,6 +24,7 @@ const MAX_ERRORES = 6;
 export class AhorcadoComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private partidaService = inject(PartidaService);
+  private router = inject(Router)
 
   // Estado del juego
   palabra: string = '';
@@ -119,6 +120,10 @@ export class AhorcadoComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalo);
       this.intervalo = null;
     }
+  }
+
+  salir(){
+    this.router.navigate(['/home'])
   }
 
   // ── Getters para el template ──────────────────────────────
