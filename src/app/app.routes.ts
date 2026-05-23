@@ -18,6 +18,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/registro/registro').then((m) => m.RegistroComponent)
     },
     {
+        path: 'resultados',
+        loadComponent: () => import('./pages/resultados/resultados/resultados').then((m) => m.ResultadosComponent)
+    },
+    {
         path: 'juego-ahorcado',
         loadComponent: () => import('./pages/juegos/juego-ahorcado/juego-ahorcado').then((m) => m.AhorcadoComponent)
     },
