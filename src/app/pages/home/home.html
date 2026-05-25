@@ -22,8 +22,12 @@
       <div class="juego-info">
         <h3>AHORCADO</h3>
         <p>Jugá a adivinar la palabra secreta.</p>
-        <button class="btn-jugar">
-          Jugar ahora
+        <button class="btn-jugar" 
+        routerLink="/juego-ahorcado"
+        [disabled]="!authService.estaLogueado"
+        [title]="!authService.estaLogueado ? 'Iniciá sesión para jugar' : ''"
+        >
+                Jugar ahora
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
           </svg>
@@ -32,13 +36,17 @@
     </div>
 
     <div class="juego-card">
-      <div class="juego-img" style="background-image: url('https://www.higherorlowergame.com/build/images/higher-or-lower-logo.svg')">
+      <div class="juego-img" style="background-image: url('https://a.silvergames.com/j/b/higher-lower-card-game.jpg')">
         <span class="juego-tag">LÓGICA</span>
       </div>
       <div class="juego-info">
         <h3>MAYOR O MENOR</h3>
         <p>Adivinar si la próxima carta va a ser un número mayor o un número menor.</p>
-        <button class="btn-jugar">
+        <button class="btn-jugar" 
+        routerLink="/juego-mayor-menor"
+        [disabled]="!authService.estaLogueado"
+        [title]="!authService.estaLogueado ? 'Iniciá sesión para jugar' : ''"
+        >
           Jugar ahora
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
@@ -81,69 +89,7 @@
   </div>
 </section>
 
-<!-- ===== FILOSOFIA ===== -->
-<section class="filosofia-section">
-  <div class="filosofia-text">
-    <h2>Nuestra Filosofía</h2>
-    <p>
-      En <strong>CorpAgile</strong>, creemos que la tecnología no debe ser una barrera, sino un puente hacia la excelencia. Nos especializamos en desmantelar procesos obsoletos y sustituirlos por sistemas ágiles que responden al ritmo del mercado global actual.
-    </p>
-    <div class="filosofia-badges">
-      <div class="fil-badge">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/>
-        </svg>
-        <div>
-          <span class="fil-badge-title">Certificados</span>
-          <span class="fil-badge-desc">Estándares globales de agilidad.</span>
-        </div>
-      </div>
-      <div class="fil-badge">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
-        </svg>
-        <div>
-          <span class="fil-badge-title">Expertos</span>
-          <span class="fil-badge-desc">Consultoría personalizada.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="filosofia-visual">
-    <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=700&q=80" alt="Team meeting" class="filosofia-img" />
-    <div class="filosofia-play">
-      <button class="play-btn" aria-label="Ver video">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
-        </svg>
-      </button>
-      <span>Conoce nuestra historia</span>
-    </div>
-  </div>
+<!-- ===== CHAT ===== -->
+<section class="chat-section">
+  <app-chat-global>  </app-chat-global>
 </section>
-
-<!-- ===== CTA ===== -->
-<section class="cta-section">
-  <div class="cta-inner">
-    <h2>¿Listo para transformar tu empresa?</h2>
-    <p>Únete a las cientos de corporaciones que ya han dado el paso hacia la agilidad real con CorpAgile.</p>
-    <div class="cta-actions">
-      <button class="btn-primary">Registro Gratuito</button>
-      <button class="btn-outline">Hablar con un Asesor</button>
-    </div>
-  </div>
-</section>
-
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-  <div class="footer-left">
-    <span class="footer-brand">CorpAgile</span>
-    <span class="footer-copy">© 2024 CorpAgile Professional Solutions.</span>
-  </div>
-  <div class="footer-links">
-    <a href="#">Privacy Policy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
-  </div>
-</footer>

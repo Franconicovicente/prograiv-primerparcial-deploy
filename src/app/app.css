@@ -1,20 +1,24 @@
-/* Configuraciones globales para que el nav no rompa nada */
-body {
+/* ===== Reset & Global ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0d1117; /* Fondo oscuro general por si te sirve */
-  color: #0d1117;
 }
 
-/* Estilos de la Barra de Navegación */
+html, body {
+  min-height: 100%;
+  background-color: #161c2a;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #e8eaf0;
+}
+
+/* ===== Navbar ===== */
 .main-navbar {
-  background-color: #1a1a1e;
-  border-bottom: 2px solid #007bff;
+  background-color: #10151e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .nav-container {
@@ -23,83 +27,151 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: 0 2rem;
+  height: 60px;
 }
 
 /* Logo */
 .nav-logo a {
-  color: #ffffff;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  font-size: 1.4rem;
-  font-weight: bold;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #e8eaf0;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  letter-spacing: -0.02em;
+  transition: color 0.2s;
 }
 
-/* Menú Central */
+.nav-logo a:hover {
+  color: #fff;
+}
+
+/* Menu central */
 .nav-menu {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 0.25rem;
 }
 
-.nav-menu a, .nav-auth a {
-    color: #aaaaaa;
-    text-decoration: none;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  font-size: 1rem;
+.nav-menu a {
+  font-size: 0.875rem;
   font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  color: #8892a4;
+  text-decoration: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 7px;
+  transition: color 0.2s, background-color 0.2s;
 }
 
-/* Efectos Hover */
-.nav-menu a:hover, .nav-auth .btn-login:hover {
-  color: #ffffff;
+.nav-menu a:hover {
+  color: #e8eaf0;
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Botón de Registro (Destacado) */
+.nav-menu a.active {
+  color: #e8eaf0;
+  font-weight: 600;
+  border-bottom: 2px solid #8c50ff;
+  border-radius: 0;
+  padding-bottom: 0.3rem;
+}
+
+/* Auth área */
 .nav-auth {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
 }
 
-.nav-auth .btn-register {
-  background-color: #007bff;
-  color: #ffffff;
+.nav-auth a {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
 }
 
-.nav-auth .btn-register:hover {
-  background-color: #0056b3;
+.btn-login {
+  color: #8892a4;
 }
 
-/* Clase que mete Angular automáticamente al link activo */
-.nav-menu a.active, .nav-auth a.active {
-  color: #007bff;
-  font-weight: bold;
+.btn-login:hover {
+  color: #e8eaf0 !important;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
-.nav-auth .btn-register.active {
-  background-color: #0056b3;
-  color: #ffffff;
+.btn-register {
+  background-color: #8c50ff;
+  color: #fff !important;
+  font-weight: 600 !important;
 }
 
-/* Contenedor del Router Outlet para que las páginas no queden pegadas al techo */
+.btn-register:hover {
+  background-color: #7a3ef0 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(140, 80, 255, 0.3);
+}
+
+/* Usuario logueado */
+.user-logged-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.nav-icon {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.user-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ddd6fe;
+}
+
+.btn-logout {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8892a4;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  text-decoration: none;
+}
+
+.btn-logout:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  border-color: rgba(248, 113, 113, 0.25);
+}
+
+/* ===== Main content ===== */
 .main-content {
   max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 20px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
 }
 
-/* Responsivo simple para celulares */
-@media (max-width: 600px) {
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
   .nav-container {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .nav-menu {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 0.5rem;
+  }
+
+  .user-name {
+    display: none;
   }
 }
