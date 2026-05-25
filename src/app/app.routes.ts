@@ -18,12 +18,24 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/registro/registro').then((m) => m.RegistroComponent)
     },
     {
+        path: 'resultados',
+        loadComponent: () => import('./pages/resultados/resultados/resultados').then((m) => m.ResultadosComponent)
+    },
+    {
         path: 'juego-ahorcado',
         loadComponent: () => import('./pages/juegos/juego-ahorcado/juego-ahorcado').then((m) => m.AhorcadoComponent)
     },
     {
         path: 'juego-mayor-menor',
         loadComponent: () => import('./pages/juegos/juego-mayor-menor/juego-mayor-menor').then((m) => m.MayorMenorComponent)
+    },
+    {
+        path: 'juego-preguntados',
+        loadComponent: () => import('./pages/juegos/juego-preguntados/juego-preguntados/juego-preguntados').then((m) => m.PreguntadosComponent)
+    },
+    {
+        path: 'juego-propio',
+        loadComponent: () => import('./pages/juegos/juego-propio/juego-propio/juego-propio').then((m) => m.JuegoPropioComponent)
     },
     {
         path: '',
