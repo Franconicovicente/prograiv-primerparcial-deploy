@@ -10,8 +10,6 @@ export interface PerfilSimplificado {
   public_repos: number;
 }
 
-
-
 @Injectable({
   providedIn: 'root'
 })

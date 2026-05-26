@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
-  standalone: true, // ◄ Clave en Angular moderno
+  standalone: true, 
   imports: [ReactiveFormsModule, RouterLink, NgIf], 
   templateUrl: './registro.html',
   styleUrls: ['./registro.css']
@@ -30,7 +30,6 @@ export class RegistroComponent implements OnInit {
   }
 async onSubmit(): Promise<void> {
     if (this.registroForm.valid) {
-      // 1. Sacamos los datos del formulario
       const { email, password, nombre, apellido, edad } = this.registroForm.value;
 
       try {

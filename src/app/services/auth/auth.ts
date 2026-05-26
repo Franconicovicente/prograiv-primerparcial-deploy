@@ -15,6 +15,8 @@ export class AuthService {
   private supabase: SupabaseClient = createClient('https://bscfusqgtnusravgrmyf.supabase.co', 
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzY2Z1c3FndG51c3JhdmdybXlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNjQzMTQsImV4cCI6MjA5NDc0MDMxNH0.iNZ36fzmhpJfskGrsRXTUyEXeV49Ig8PoZAXxhGa1Ds');
 
+
+  // register
   registrarUsuario(datosRegistro: any): Observable<any> {
     const { email, password, nombre, apellido, edad } = datosRegistro;
 
@@ -51,6 +53,8 @@ export class AuthService {
     );
   }
 
+  // iniciar sesion
+
   iniciarSesion(credenciales: any): Observable<any> {
     const { email, password } = credenciales;
 
@@ -66,6 +70,7 @@ export class AuthService {
     );
   }
 
+  // mostrar usuario logeado
   private usuarioLogueado$ = new BehaviorSubject<UsuarioSesion | null>(null);
 
   get session$(): Observable<UsuarioSesion | null> {
