@@ -17,14 +17,18 @@ export class AppComponent implements OnInit {
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.authService.session$.subscribe(user => {
       this.usuario = user;
-      this.cdr.detectChanges(); 
+      this.cdr.detectChanges();
     });
+    const { data } = await this.authService.client.auth.getSession();
+      if (data.session?.user) {
+      this.authService.actualizarUsuarioDesdeSupabase(data.session.user);
+    } 
   }
 
-  onCerrarSesion(): void {
-    this.authService.cerrarSesion();
+  async onCerrarSesion(): Promise<void> {
+    await this.authService.cerrarSesion();
   }
 }

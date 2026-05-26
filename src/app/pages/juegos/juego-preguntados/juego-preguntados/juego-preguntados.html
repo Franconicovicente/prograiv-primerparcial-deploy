@@ -1,0 +1,136 @@
+<div class="game-wrapper">
+
+  <!-- Cargando -->
+  <div class="loading-screen" *ngIf="estado === 'cargando'">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <p>Cargando países...</p>
+  </div>
+
+  <!-- Juego -->
+  <ng-container *ngIf="estado === 'jugando' || estado === 'respondido'">
+
+    <!-- Header -->
+    <div class="game-header">
+      <div class="header-stat">
+        <span class="stat-label">Pregunta</span>
+        <span class="stat-value">{{ preguntaActual + 1 }} / {{ totalPreguntas }}</span>
+      </div>
+      <div class="header-stat">
+        <span class="stat-label">Correctas</span>
+        <span class="stat-value success">{{ correctas }}</span>
+      </div>
+      <div class="header-stat">
+        <span class="stat-label">Tiempo</span>
+        <span class="stat-value">{{ tiempoFormateado }}</span>
+      </div>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progresoBarWidth"></div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-area">
+      <div class="timer-ring">
+        <svg viewBox="0 0 44 44">
+          <circle cx="22" cy="22" r="18" fill="none" stroke-width="3" class="timer-track"/>
+          <circle cx="22" cy="22" r="18" fill="none" stroke-width="3"
+            class="timer-fill"
+            [class.timer-warning]="timerSegundos <= 5"
+            [style.stroke-dasharray]="113"
+            [style.stroke-dashoffset]="113 - (porcentajeTimer / 100) * 113"
+          />
+        </svg>
+        <span class="timer-num" [class.timer-warning]="timerSegundos <= 5">{{ timerSegundos }}</span>
+      </div>
+    </div>
+
+    <!-- Mapa del país -->
+    <div class="map-area" *ngIf="paisActual">
+      <div class="map-card">
+        <img
+          [src]="getMapUrl(paisActual.code)"
+          [alt]="estado === 'respondido' ? paisActual.name : '?'"
+          class="map-img"
+          (error)="$any($event.target).src='https://via.placeholder.com/300x300/1c2438/8892a4?text=?'"
+        />
+        <div class="map-overlay" *ngIf="estado === 'jugando'">
+          <span>¿Qué país es este?</span>
+        </div>
+        <div class="map-revealed" *ngIf="estado === 'respondido'">
+          <img [src]="getFlagUrl(paisActual.code)" [alt]="paisActual.name" class="flag-revealed" />
+          <span>{{ paisActual.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Opciones -->
+    <div class="options-grid">
+      <button
+        *ngFor="let opcion of opciones"
+        class="option-btn"
+        [class.option-correct]="esRespuestaCorrecta(opcion)"
+        [class.option-wrong]="esRespuestaIncorrecta(opcion)"
+        [class.option-disabled]="estado === 'respondido'"
+        [disabled]="estado === 'respondido'"
+        (click)="responder(opcion)"
+      >
+        <img [src]="getFlagUrl(opcion.code)" [alt]="opcion.name" class="option-flag" />
+        <span>{{ opcion.name }}</span>
+        <svg *ngIf="esRespuestaCorrecta(opcion)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="option-icon">
+          <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+        </svg>
+        <svg *ngIf="esRespuestaIncorrecta(opcion)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="option-icon">
+          <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Tiempo agotado -->
+    <div class="timeout-msg" *ngIf="estado === 'respondido' && !respuestaSeleccionada">
+      ⏱ ¡Tiempo agotado! Era <strong>{{ paisActual?.name }}</strong>
+    </div>
+
+  </ng-container>
+
+  <!-- Fin -->
+  <div class="fin-overlay" *ngIf="estado === 'fin'">
+    <div class="fin-card">
+      <div class="fin-icon">{{ correctas >= 7 ? '🏆' : correctas >= 5 ? '👍' : '💀' }}</div>
+      <h2 class="fin-title">
+        {{ correctas >= 7 ? '¡Excelente!' : correctas >= 5 ? '¡Bien!' : 'Hay que mejorar' }}
+      </h2>
+
+      <div class="fin-stats">
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ correctas }}</span>
+          <span class="fin-stat-label">Correctas</span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ totalPreguntas - correctas }}</span>
+          <span class="fin-stat-label">Incorrectas</span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ porcentajeAciertos }}%</span>
+          <span class="fin-stat-label">Precisión</span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ tiempoFormateado }}</span>
+          <span class="fin-stat-label">Tiempo</span>
+        </div>
+      </div>
+
+      <span class="saving-text" *ngIf="guardando">Guardando partida...</span>
+
+      <button class="btn-reintentar" (click)="iniciarPartida()">
+        Jugar de nuevo
+      </button>
+
+      <button class="btn-reintentar" (click)="salir()">
+        Salir al menú
+      </button>
+    </div>
+  </div>
+
+</div>

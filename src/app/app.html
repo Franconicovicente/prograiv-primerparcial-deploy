@@ -7,6 +7,7 @@
     <nav class="nav-menu">
       <a routerLink="/home" routerLinkActive="active">Inicio</a>
       <a routerLink="/quien-soy" routerLinkActive="active">Quién Soy</a>
+      <a routerLink="/resultados" routerLinkActive="active">Resultados</a>
     </nav>
 
     <div class="nav-auth">
@@ -14,7 +15,9 @@
     <div class="user-logged-info">
       <span class="nav-icon">👤</span> 
       <span class="user-name">¡Hola, {{ usuario.nombre }}!</span>
-      <button (click)="onCerrarSesion()" class="btn-logout">Cerrar Sesión</button>
+      <button (click)="onCerrarSesion()" class="btn-logout"
+      routerLink="/home"
+      >Cerrar Sesión</button>
     </div>
   } @else {
     <a routerLink="/login" class="btn-login">Ingresar</a>

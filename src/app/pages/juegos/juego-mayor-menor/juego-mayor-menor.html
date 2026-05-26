@@ -1,0 +1,126 @@
+<div class="game-wrapper">
+
+  <!-- Header stats -->
+  <div class="game-header">
+    <div class="header-stat">
+      <span class="stat-label">Tiempo</span>
+      <span class="stat-value">{{ tiempoFormateado }}</span>
+    </div>
+    <div class="header-stat">
+      <span class="stat-label">Aciertos</span>
+      <span class="stat-value success">{{ cartasAcertadas }}</span>
+    </div>
+    <div class="header-stat">
+      <span class="stat-label">Jugadas</span>
+      <span class="stat-value">{{ cartasTotales }}</span>
+    </div>
+    <div class="header-stat">
+      <span class="stat-label">Restantes</span>
+      <span class="stat-value">{{ cartasRestantes }}</span>
+    </div>
+  </div>
+
+  <!-- Área de juego -->
+  <div class="game-area">
+
+    <!-- Carta actual -->
+    <div class="card-scene">
+      <div class="playing-card" [class.card-red]="esRoja" *ngIf="cartaActual">
+        <span class="card-corner card-top-left">
+          <span class="card-val">{{ cartaActual.nombre }}</span>
+          <span class="card-suit">{{ cartaActual.palo }}</span>
+        </span>
+        <span class="card-center-suit">{{ cartaActual.palo }}</span>
+        <span class="card-corner card-bottom-right">
+          <span class="card-val">{{ cartaActual.nombre }}</span>
+          <span class="card-suit">{{ cartaActual.palo }}</span>
+        </span>
+      </div>
+
+      <!-- Indicador de resultado -->
+      <div class="result-indicator" *ngIf="ultimoResultado"
+        [class.indicator-correct]="ultimoResultado === 'correcto'"
+        [class.indicator-wrong]="ultimoResultado === 'incorrecto'">
+        <span *ngIf="ultimoResultado === 'correcto'">✓ ¡Correcto!</span>
+        <span *ngIf="ultimoResultado === 'incorrecto'">✗ Incorrecto</span>
+      </div>
+    </div>
+
+    <!-- Pregunta y botones -->
+    <div class="choice-area" *ngIf="estado === 'jugando'">
+      <p class="choice-question">¿La próxima carta será?</p>
+      <div class="choice-buttons">
+        <button class="btn-choice btn-mayor" (click)="elegir('mayor')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/>
+          </svg>
+          Mayor
+        </button>
+        <button class="btn-choice btn-menor" (click)="elegir('menor')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"/>
+          </svg>
+          Menor
+        </button>
+      </div>
+    </div>
+
+    <!-- Resultado intermedio (mientras espera) -->
+    <div class="waiting-area" *ngIf="estado === 'resultado'">
+      <div class="next-card-preview" *ngIf="cartaSiguiente">
+        <span class="preview-label">Siguiente carta</span>
+        <div class="playing-card playing-card--sm"
+          [class.card-red]="cartaSiguiente.palo === '♥' || cartaSiguiente.palo === '♦'">
+          <span class="card-corner card-top-left">
+            <span class="card-val">{{ cartaSiguiente.nombre }}</span>
+            <span class="card-suit">{{ cartaSiguiente.palo }}</span>
+          </span>
+          <span class="card-center-suit">{{ cartaSiguiente.palo }}</span>
+          <span class="card-corner card-bottom-right">
+            <span class="card-val">{{ cartaSiguiente.nombre }}</span>
+            <span class="card-suit">{{ cartaSiguiente.palo }}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pantalla de fin -->
+  <div class="fin-overlay" *ngIf="estado === 'fin'">
+    <div class="fin-card">
+      <div class="fin-icon">{{ cartasAcertadas > cartasTotales / 2 ? '🏆' : '💀' }}</div>
+      <h2 class="fin-title">{{ cartasAcertadas > cartasTotales / 2 ? '¡Muy bien!' : 'Game Over' }}</h2>
+
+      <div class="fin-stats">
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ cartasAcertadas }}</span>
+          <span class="fin-stat-label">Aciertos</span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ cartasTotales }}</span>
+          <span class="fin-stat-label">Jugadas</span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ porcentajeAciertos }}%</span>
+          <span class="fin-stat-label">Precisión</span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat-num">{{ tiempoFormateado }}</span>
+          <span class="fin-stat-label">Tiempo</span>
+        </div>
+      </div>
+
+      <span class="saving-text" *ngIf="guardando">Guardando partida...</span>
+
+      <button class="btn-reintentar" (click)="iniciarPartida()">
+        Jugar de nuevo
+      </button>
+
+      <button class="btn-reintentar" (click)="salir()">
+        Salir al menú
+      </button>
+    </div>
+  </div>
+
+</div>
