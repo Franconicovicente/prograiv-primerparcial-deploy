@@ -1,6 +1,5 @@
 <div class="resultados-wrapper">
 
-  <!-- Header -->
   <div class="page-header">
     <h1 class="page-title">
       <span class="title-icon">🏆</span>
@@ -9,7 +8,6 @@
     <p class="page-subtitle">Ranking global de todos los jugadores ordenado por mejor desempeño.</p>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab" [class.tab-active]="tabActiva === 'tetris'" (click)="setTab('tetris')">
       <span class="tab-icon">🟪</span> Tetra
@@ -25,96 +23,111 @@
     </button>
   </div>
 
-  <!-- Loading -->
-  <div class="loading-area" *ngIf="cargando">
-    <div class="loading-dots">
-      <span></span><span></span><span></span>
-    </div>
-    <p>Cargando resultados...</p>
-  </div>
-
-  <!-- Tabla -->
-  <div class="table-wrapper" *ngIf="!cargando">
-
-    <!-- Top 3 podio -->
-    <div class="podio" *ngIf="rankingActivo.length >= 3">
-      <div class="podio-item podio-2" *ngIf="rankingActivo[1]">
-        <div class="podio-avatar">{{ rankingActivo[1].nombre.charAt(0) }}</div>
-        <div class="podio-name">{{ rankingActivo[1].nombre }}</div>
-        <div class="podio-score">{{ rankingActivo[1].puntajePrincipal }}</div>
-        <div class="podio-base podio-base--2">🥈</div>
+  @if (cargando) {
+    <div class="loading-area">
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
       </div>
-      <div class="podio-item podio-1" *ngIf="rankingActivo[0]">
-        <div class="podio-crown">👑</div>
-        <div class="podio-avatar podio-avatar--gold">{{ rankingActivo[0].nombre.charAt(0) }}</div>
-        <div class="podio-name">{{ rankingActivo[0].nombre }}</div>
-        <div class="podio-score">{{ rankingActivo[0].puntajePrincipal }}</div>
-        <div class="podio-base podio-base--1">🥇</div>
-      </div>
-      <div class="podio-item podio-3" *ngIf="rankingActivo[2]">
-        <div class="podio-avatar">{{ rankingActivo[2].nombre.charAt(0) }}</div>
-        <div class="podio-name">{{ rankingActivo[2].nombre }}</div>
-        <div class="podio-score">{{ rankingActivo[2].puntajePrincipal }}</div>
-        <div class="podio-base podio-base--3">🥉</div>
-      </div>
+      <p>Cargando resultados...</p>
     </div>
+  }
 
-    <!-- Tabla completa -->
-    <div class="table-container" *ngIf="rankingActivo.length > 0">
-      <table class="ranking-table">
-        <thead>
-          <tr>
-            <th class="col-pos">#</th>
-            <th class="col-nombre">Jugador</th>
-            <th class="col-principal">{{ columnasActivas.principal }}</th>
-            <th class="col-secundaria">{{ columnasActivas.secundaria }}</th>
-            <th class="col-extra">{{ columnasActivas.extra }}</th>
-            <th class="col-fecha">Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let fila of rankingActivo"
-            [class.row-own]="fila.esPropio"
-            [class.row-top]="fila.posicion <= 3"
-          >
-            <td class="col-pos">
-              <span class="medalla" *ngIf="fila.posicion <= 3">{{ getMedalla(fila.posicion) }}</span>
-              <span class="pos-num" *ngIf="fila.posicion > 3">{{ fila.posicion }}</span>
-            </td>
-            <td class="col-nombre">
-              <div class="player-info">
-                <div class="player-avatar">{{ fila.nombre.charAt(0) }}</div>
-                <span class="player-name">
-                  {{ fila.nombre }}
-                  <span class="badge-vos" *ngIf="fila.esPropio">Vos</span>
-                </span>
-              </div>
-            </td>
-            <td class="col-principal">
-              <span class="value-principal">{{ fila.puntajePrincipal }}</span>
-            </td>
-            <td class="col-secundaria">
-              <span class="value-secondary">{{ fila.puntajeSecundario }}</span>
-            </td>
-            <td class="col-extra">
-              <span class="value-extra">{{ fila.extra }}</span>
-            </td>
-            <td class="col-fecha">
-              <span class="value-fecha">{{ fila.fecha | slice:0:10 }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  @if (!cargando) {
+    <div class="table-wrapper">
 
-    <!-- Empty -->
-    <div class="empty-state" *ngIf="rankingActivo.length === 0">
+      @if (rankingActivo.length >= 3) {
+        <div class="podio">
+          @if (rankingActivo[1]) {
+            <div class="podio-item podio-2">
+              <div class="podio-avatar">{{ rankingActivo[1].nombre.charAt(0) }}</div>
+              <div class="podio-name">{{ rankingActivo[1].nombre }}</div>
+              <div class="podio-score">{{ rankingActivo[1].puntajePrincipal }}</div>
+              <div class="podio-base podio-base--2">🥈</div>
+            </div>
+          }
+          
+          @if (rankingActivo[0]) {
+            <div class="podio-item podio-1">
+              <div class="podio-crown">👑</div>
+              <div class="podio-avatar podio-avatar--gold">{{ rankingActivo[0].nombre.charAt(0) }}</div>
+              <div class="podio-name">{{ rankingActivo[0].nombre }}</div>
+              <div class="podio-score">{{ rankingActivo[0].puntajePrincipal }}</div>
+              <div class="podio-base podio-base--1">🥇</div>
+            </div>
+          }
+
+          @if (rankingActivo[2]) {
+            <div class="podio-item podio-3">
+              <div class="podio-avatar">{{ rankingActivo[2].nombre.charAt(0) }}</div>
+              <div class="podio-name">{{ rankingActivo[2].nombre }}</div>
+              <div class="podio-score">{{ rankingActivo[2].puntajePrincipal }}</div>
+              <div class="podio-base podio-base--3">🥉</div>
+            </div>
+          }
+        </div>     
+      }
+
+      @if (rankingActivo.length > 0) {
+        <div class="table-container">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th class="col-pos">#</th>
+                <th class="col-nombre">Jugador</th>
+                <th class="col-principal">{{ columnasActivas.principal }}</th>
+                <th class="col-secundaria">{{ columnasActivas.secundaria }}</th>
+                <th class="col-extra">{{ columnasActivas.extra }}</th>
+                <th class="col-fecha">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (fila of rankingActivo; track fila.posicion) {
+                <tr
+                  [class.row-own]="fila.esPropio"
+                  [class.row-top]="fila.posicion <= 3"
+                >
+                  <td class="col-pos">
+                    @if (fila.posicion <= 3) {
+                      <span class="medalla">{{ getMedalla(fila.posicion) }}</span>
+                    } @else {
+                      <span class="pos-num">{{ fila.posicion }}</span>
+                    }
+                  </td>
+                  <td class="col-nombre">
+                    <div class="player-info">
+                      <div class="player-avatar">{{ fila.nombre.charAt(0) }}</div>
+                      <span class="player-name">
+                        {{ fila.nombre }}
+                        @if (fila.esPropio) {
+                          <span class="badge-vos">Vos</span>
+                        }
+                      </span>
+                    </div>
+                  </td>
+                  <td class="col-principal">
+                    <span class="value-principal">{{ fila.puntajePrincipal }}</span>
+                  </td>
+                  <td class="col-secundaria">
+                    <span class="value-secondary">{{ fila.puntajeSecundario }}</span>
+                  </td>
+                  <td class="col-extra">
+                    <span class="value-extra">{{ fila.extra }}</span>
+                  </td>
+                  <td class="col-fecha">
+                    <span class="value-fecha">{{ fila.fecha | slice:0:10 }}</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div> } @if (!cargando && rankingActivo.length === 0) {
+    <div class="empty-state">
       <span class="empty-icon">🎮</span>
       <p>Todavía no hay partidas registradas para este juego.</p>
       <p class="empty-sub">¡Sé el primero en jugar!</p>
     </div>
-
-  </div>
+  }
 
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, NgZone, HostListener } from '@angular/core';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth';
 import { PartidaJuegoPropioService } from '../../../../services/juego-propio/juego-propio';
 
@@ -63,7 +63,7 @@ function piezaAleatoria(): Pieza {
 @Component({
   selector: 'app-tetris',
   standalone: true,
-  imports: [NgIf, NgFor, NgClass],
+  imports: [NgClass],
   templateUrl: './juego-propio.html',
   styleUrls: ['./juego-propio.css'] 
 })

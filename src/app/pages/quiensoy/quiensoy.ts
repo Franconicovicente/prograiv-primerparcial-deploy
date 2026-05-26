@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core'; // 👈 Importamos signal
 import { GithubService, PerfilSimplificado } from '../../services/github/github'; 
 
 @Component({
@@ -8,25 +8,23 @@ import { GithubService, PerfilSimplificado } from '../../services/github/github'
   styleUrls: ['./quiensoy.css']
 })
 export class QuiensoyComponent implements OnInit {
-  username: string = 'Franconicovicente'; 
-  perfil: PerfilSimplificado | null = null;
-  cargando: boolean = true;
-  error: string | null = null;
+  username = signal<string>('Franconicovicente'); 
+  perfil = signal<PerfilSimplificado | null>(null);
+  cargando = signal<boolean>(true);
+  error = signal<string | null>(null);
 
-  constructor(private githubService: GithubService, private cdr: ChangeDetectorRef) {}
+  constructor(private githubService: GithubService) {}
 
   ngOnInit(): void {
-    this.githubService.obtenerPerfil(this.username).subscribe({
+    this.githubService.obtenerPerfil(this.username()).subscribe({
       next: (data) => {
-        this.perfil = data; 
-        this.cargando = false;
-        this.cdr.detectChanges();
+        this.perfil.set(data); 
+        this.cargando.set(false);
       },
       error: (err) => {
-        this.error = 'No se pudieron cargar los datos del alumno.';
-        this.cargando = false;
+        this.error.set('No se pudieron cargar los datos del alumno.');
+        this.cargando.set(false);
         console.error(err);
-        this.cdr.detectChanges();
       }
     });
   }

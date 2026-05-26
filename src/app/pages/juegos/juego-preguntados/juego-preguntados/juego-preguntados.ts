@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, NgZone } from '@angular/core';
-import { NgIf, NgFor, NgClass } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth';
 import { PartidaPreguntadosService } from '../../../../services/partida-preguntados/partida-preguntados';
 import { Router, RouterLink } from '@angular/router';
@@ -15,7 +14,7 @@ export interface Pais {
 @Component({
   selector: 'app-preguntados',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [],
   templateUrl: './juego-preguntados.html',
   styleUrls: ['./juego-preguntados.css']
 })

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { NgFor, NgIf, NgClass } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth';
 import { PartidaService } from '../../../services/partida-ahorcado/partida';
 import { Router, RouterLink } from '@angular/router';
@@ -17,7 +16,7 @@ const MAX_ERRORES = 6;
 @Component({
   selector: 'app-ahorcado',
   standalone: true,
-  imports: [NgFor, NgIf],
+  imports: [],
   templateUrl: './juego-ahorcado.html',
   styleUrls: ['./juego-ahorcado.css']
 })

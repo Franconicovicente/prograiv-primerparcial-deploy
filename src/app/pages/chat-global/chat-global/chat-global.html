@@ -1,6 +1,5 @@
 <div class="chat-wrapper">
 
-  <!-- Header -->
   <div class="chat-header">
     <div class="chat-header-left">
       <div class="chat-avatar-global">
@@ -28,99 +27,107 @@
     </div>
   </div>
 
-  <!-- Date divider -->
   <div class="date-divider">
     <span>HOY</span>
   </div>
 
-  <!-- Messages -->
   <div class="chat-messages">
 
-    <div *ngIf="cargando" class="chat-loading">
-      <div class="loading-dots">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-
-    <div *ngIf="error" class="chat-error">{{ error }}</div>
-
-    <div *ngIf="!cargando && mensajes.length === 0" class="chat-empty">
-      Sé el primero en escribir algo 👋
-    </div>
-
-    <ng-container *ngFor="let msg of mensajes">
-
-      <!-- Mensaje ajeno -->
-      <div class="message-row" *ngIf="!esMio(msg)">
-        <div class="msg-avatar">
-          {{ msg.nombre_usuario.charAt(0).toUpperCase() }}
-        </div>
-        <div class="msg-content">
-          <div class="msg-meta">
-            <span class="msg-name">{{ msg.nombre_usuario }}</span>
-            <span class="msg-time">{{ msg.created_at | date: 'HH:mm' }}</span>
-          </div>
-          <div class="msg-bubble msg-bubble--other">
-            <p>{{ msg.contenido }}</p>
-          </div>
+    @if (cargando) {
+      <div class="chat-loading">
+        <div class="loading-dots">
+          <span></span><span></span><span></span>
         </div>
       </div>
+    }
 
-      <!-- Mensaje propio -->
-      <div class="message-row message-row--mine" *ngIf="esMio(msg)">
-        <div class="msg-content msg-content--mine">
-          <div class="msg-meta msg-meta--mine">
-            <span class="msg-time">{{ msg.created_at | date: 'HH:mm' }}</span>
-            <span class="msg-name">Tú</span>
-          </div>
-          <div class="msg-bubble msg-bubble--mine">
-            <p>{{ msg.contenido }}</p>
-          </div>
-          <div class="msg-check">✓✓</div>
-        </div>
-        <div class="msg-avatar msg-avatar--mine">YO</div>
+    @if (error) {
+      <div class="chat-error">{{ error }}</div>
+    }
+
+    @if (!cargando && mensajes.length === 0) {
+      <div class="chat-empty">
+        Sé el primero en escribir algo 👋
       </div>
+    }
 
-    </ng-container>
+    @for (msg of mensajes; track msg.id) {
+
+      @if (!esMio(msg)) {
+        <div class="message-row">
+          <div class="msg-avatar">
+            {{ msg.nombre_usuario.charAt(0).toUpperCase() }}
+          </div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-name">{{ msg.nombre_usuario }}</span>
+              <span class="msg-time">{{ msg.created_at | date: 'HH:mm' }}</span>
+            </div>
+            <div class="msg-bubble msg-bubble--other">
+              <p>{{ msg.contenido }}</p>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="message-row message-row--mine">
+          <div class="msg-content msg-content--mine">
+            <div class="msg-meta msg-meta--mine">
+              <span class="msg-time">{{ msg.created_at | date: 'HH:mm' }}</span>
+              <span class="msg-name">Tú</span>
+            </div>
+            <div class="msg-bubble msg-bubble--mine">
+              <p>{{ msg.contenido }}</p>
+            </div>
+            <div class="msg-check">✓✓</div>
+          </div>
+          <div class="msg-avatar msg-avatar--mine">YO</div>
+        </div>
+      }
+
+    }
 
     <div #messagesEnd></div>
   </div>
 
-  <!-- Input -->
   <div class="chat-input-area">
-    <div *ngIf="!userId" class="chat-locked">
-      🔒 Iniciá sesión para participar en el chat
-    </div>
+    
+    @if (!userId) {
+      <div class="chat-locked">
+        🔒 Iniciá sesión para participar en el chat
+      </div>
+    } @else {
+      <div class="chat-input-row">
+        <button class="input-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13"/>
+          </svg>
+        </button>
+        <button class="input-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"/>
+          </svg>
+        </button>
+        <textarea
+          class="chat-input"
+          [(ngModel)]="nuevoMensaje"
+          (keydown)="onKeyDown($event)"
+          placeholder="Escribe un mensaje en el chat global..."
+          rows="1"
+          [disabled]="enviando"
+          maxlength="300"
+        ></textarea>
+        <button class="btn-send" (click)="enviar()" [disabled]="!nuevoMensaje.trim() || enviando">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="input-hint">
+        Shift + Enter para nueva línea • Canal abierto para toda la organización
+      </div>
+    }
 
-    <div *ngIf="userId" class="chat-input-row">
-      <button class="input-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13"/>
-        </svg>
-      </button>
-      <button class="input-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"/>
-        </svg>
-      </button>
-      <textarea
-        class="chat-input"
-        [(ngModel)]="nuevoMensaje"
-        (keydown)="onKeyDown($event)"
-        placeholder="Escribe un mensaje en el chat global..."
-        rows="1"
-        [disabled]="enviando"
-        maxlength="300"
-      ></textarea>
-      <button class="btn-send" (click)="enviar()" [disabled]="!nuevoMensaje.trim() || enviando">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/>
-        </svg>
-      </button>
-    </div>
-    <div class="input-hint" *ngIf="userId">
-      Shift + Enter para nueva línea • Canal abierto para toda la organización
-    </div>
   </div>
 
 </div>

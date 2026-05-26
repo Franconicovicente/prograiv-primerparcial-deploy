@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, inject, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NgIf, NgClass } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth';
 import { PartidaMayorMenorService } from '../../../services/partida-mayor-menor/partida-mayor-menor';
 import { Router } from '@angular/router';
@@ -31,7 +30,7 @@ function generarBaraja(): Carta[] {
 @Component({
   selector: 'app-mayor-menor',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   templateUrl: './juego-mayor-menor.html',
   styleUrls: ['./juego-mayor-menor.css']
 })

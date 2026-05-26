@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { NgIf, NgFor, NgClass, DecimalPipe, SlicePipe } from '@angular/common';
+import { SlicePipe } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth';
 
 export interface FilaResultado {
@@ -15,7 +15,7 @@ export interface FilaResultado {
 @Component({
   selector: 'app-resultados',
   standalone: true,
-  imports: [NgIf, NgFor, SlicePipe],
+  imports: [SlicePipe],
   templateUrl: './resultados.html',
   styleUrls: ['./resultados.css']
 })

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, NgZone } from '@angular/core';
-import { NgFor, NgIf, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth';
 import { ChatService, Mensaje } from '../../../services/chat-global/chat-global';
@@ -7,7 +7,7 @@ import { ChatService, Mensaje } from '../../../services/chat-global/chat-global'
 @Component({
   selector: 'app-chat-global',
   standalone: true,
-  imports: [NgFor, NgIf, DatePipe, FormsModule],
+  imports: [DatePipe, FormsModule],
   templateUrl: './chat-global.html',
   styleUrls: ['./chat-global.css']
 })
