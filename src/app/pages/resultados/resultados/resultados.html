@@ -9,21 +9,21 @@
   </div>
 
   <div class="tabs">
-    <button class="tab" [class.tab-active]="tabActiva === 'tetris'" (click)="setTab('tetris')">
+    <button class="tab" [class.tab-active]="tabActiva() === 'tetris'" (click)="setTab('tetris')">
       <span class="tab-icon">🟪</span> Tetra
     </button>
-    <button class="tab" [class.tab-active]="tabActiva === 'ahorcado'" (click)="setTab('ahorcado')">
+    <button class="tab" [class.tab-active]="tabActiva() === 'ahorcado'" (click)="setTab('ahorcado')">
       <span class="tab-icon">💀</span> Ahorcado
     </button>
-    <button class="tab" [class.tab-active]="tabActiva === 'mayor-menor'" (click)="setTab('mayor-menor')">
+    <button class="tab" [class.tab-active]="tabActiva() === 'mayor-menor'" (click)="setTab('mayor-menor')">
       <span class="tab-icon">🃏</span> Mayor o Menor
     </button>
-    <button class="tab" [class.tab-active]="tabActiva === 'preguntados'" (click)="setTab('preguntados')">
+    <button class="tab" [class.tab-active]="tabActiva() === 'preguntados'" (click)="setTab('preguntados')">
       <span class="tab-icon">🌍</span> Preguntados
     </button>
   </div>
 
-  @if (cargando) {
+  @if (cargando()) {
     <div class="loading-area">
       <div class="loading-dots">
         <span></span><span></span><span></span>
@@ -32,35 +32,35 @@
     </div>
   }
 
-  @if (!cargando) {
+  @if (!cargando()) {
     <div class="table-wrapper">
 
       @if (rankingActivo.length >= 3) {
         <div class="podio">
-          @if (rankingActivo[1]) {
+          @if (rankingActivo()[1]) {
             <div class="podio-item podio-2">
-              <div class="podio-avatar">{{ rankingActivo[1].nombre.charAt(0) }}</div>
-              <div class="podio-name">{{ rankingActivo[1].nombre }}</div>
-              <div class="podio-score">{{ rankingActivo[1].puntajePrincipal }}</div>
+              <div class="podio-avatar">{{ rankingActivo()[1].nombre.charAt(0) }}</div>
+              <div class="podio-name">{{ rankingActivo()[1].nombre }}</div>
+              <div class="podio-score">{{ rankingActivo()[1].puntajePrincipal }}</div>
               <div class="podio-base podio-base--2">🥈</div>
             </div>
           }
           
-          @if (rankingActivo[0]) {
+          @if (rankingActivo()[0]) {
             <div class="podio-item podio-1">
               <div class="podio-crown">👑</div>
-              <div class="podio-avatar podio-avatar--gold">{{ rankingActivo[0].nombre.charAt(0) }}</div>
-              <div class="podio-name">{{ rankingActivo[0].nombre }}</div>
-              <div class="podio-score">{{ rankingActivo[0].puntajePrincipal }}</div>
+              <div class="podio-avatar podio-avatar--gold">{{ rankingActivo()[0].nombre.charAt(0) }}</div>
+              <div class="podio-name">{{ rankingActivo()[0].nombre }}</div>
+              <div class="podio-score">{{ rankingActivo()[0].puntajePrincipal }}</div>
               <div class="podio-base podio-base--1">🥇</div>
             </div>
           }
 
-          @if (rankingActivo[2]) {
+          @if (rankingActivo()[2]) {
             <div class="podio-item podio-3">
-              <div class="podio-avatar">{{ rankingActivo[2].nombre.charAt(0) }}</div>
-              <div class="podio-name">{{ rankingActivo[2].nombre }}</div>
-              <div class="podio-score">{{ rankingActivo[2].puntajePrincipal }}</div>
+              <div class="podio-avatar">{{ rankingActivo()[2].nombre.charAt(0) }}</div>
+              <div class="podio-name">{{ rankingActivo()[2].nombre }}</div>
+              <div class="podio-score">{{ rankingActivo()[2].puntajePrincipal }}</div>
               <div class="podio-base podio-base--3">🥉</div>
             </div>
           }
@@ -74,14 +74,14 @@
               <tr>
                 <th class="col-pos">#</th>
                 <th class="col-nombre">Jugador</th>
-                <th class="col-principal">{{ columnasActivas.principal }}</th>
-                <th class="col-secundaria">{{ columnasActivas.secundaria }}</th>
-                <th class="col-extra">{{ columnasActivas.extra }}</th>
+                <th class="col-principal">{{ columnasActivas().principal }}</th>
+                <th class="col-secundaria">{{ columnasActivas().secundaria }}</th>
+                <th class="col-extra">{{ columnasActivas().extra }}</th>
                 <th class="col-fecha">Fecha</th>
               </tr>
             </thead>
             <tbody>
-              @for (fila of rankingActivo; track fila.posicion) {
+              @for (fila of rankingActivo(); track fila.posicion) {
                 <tr
                   [class.row-own]="fila.esPropio"
                   [class.row-top]="fila.posicion <= 3"

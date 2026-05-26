@@ -3,54 +3,54 @@
   <div class="game-header">
     <div class="header-stat">
       <span class="stat-label">Tiempo</span>
-      <span class="stat-value">{{ tiempoFormateado }}</span>
+      <span class="stat-value">{{ tiempoFormateado() }}</span>
     </div>
     <div class="header-stat">
       <span class="stat-label">Aciertos</span>
-      <span class="stat-value success">{{ cartasAcertadas }}</span>
+      <span class="stat-value success">{{ cartasAcertadas() }}</span>
     </div>
     <div class="header-stat">
       <span class="stat-label">Jugadas</span>
-      <span class="stat-value">{{ cartasTotales }}</span>
+      <span class="stat-value">{{ cartasTotales() }}</span>
     </div>
     <div class="header-stat">
       <span class="stat-label">Restantes</span>
-      <span class="stat-value">{{ cartasRestantes }}</span>
+      <span class="stat-value">{{ cartasRestantes() }}</span>
     </div>
   </div>
 
   <div class="game-area">
 
     <div class="card-scene">
-      @if (cartaActual) {
-        <div class="playing-card" [class.card-red]="esRoja">
+      @if (cartaActual()) {
+        <div class="playing-card" [class.card-red]="esRoja()">
           <span class="card-corner card-top-left">
-            <span class="card-val">{{ cartaActual.nombre }}</span>
-            <span class="card-suit">{{ cartaActual.palo }}</span>
+            <span class="card-val">{{ cartaActual()?.nombre }}</span>
+            <span class="card-suit">{{ cartaActual()?.palo }}</span>
           </span>
-          <span class="card-center-suit">{{ cartaActual.palo }}</span>
+          <span class="card-center-suit">{{ cartaActual()?.palo }}</span>
           <span class="card-corner card-bottom-right">
-            <span class="card-val">{{ cartaActual.nombre }}</span>
-            <span class="card-suit">{{ cartaActual.palo }}</span>
+            <span class="card-val">{{ cartaActual()?.nombre }}</span>
+            <span class="card-suit">{{ cartaActual()?.palo }}</span>
           </span>
         </div>
       }
 
-      @if (ultimoResultado) {
+      @if (ultimoResultado()) {
         <div class="result-indicator"
-          [class.indicator-correct]="ultimoResultado === 'correcto'"
-          [class.indicator-wrong]="ultimoResultado === 'incorrecto'">
-          @if (ultimoResultado === 'correcto') {
+          [class.indicator-correct]="ultimoResultado() === 'correcto'"
+          [class.indicator-wrong]="ultimoResultado() === 'incorrecto'">
+          @if (ultimoResultado() === 'correcto') {
             <span>✓ ¡Correcto!</span>
           }
-          @if (ultimoResultado === 'incorrecto') {
+          @if (ultimoResultado() === 'incorrecto') {
             <span>✗ Incorrecto</span>
           }
         </div>
       }
     </div>
 
-    @if (estado === 'jugando') {
+    @if (estado() === 'jugando') {
       <div class="choice-area">
         <p class="choice-question">¿La próxima carta será?</p>
         <div class="choice-buttons">
@@ -70,21 +70,21 @@
       </div>
     }
 
-    @if (estado === 'resultado') {
+    @if (estado() === 'resultado') {
       <div class="waiting-area">
-        @if (cartaSiguiente) {
+        @if (cartaSiguiente()) {
           <div class="next-card-preview">
             <span class="preview-label">Siguiente carta</span>
             <div class="playing-card playing-card--sm"
-              [class.card-red]="cartaSiguiente.palo === '♥' || cartaSiguiente.palo === '♦'">
+              [class.card-red]="cartaSiguiente()?.palo === '♥' || cartaSiguiente()?.palo === '♦'">
               <span class="card-corner card-top-left">
-                <span class="card-val">{{ cartaSiguiente.nombre }}</span>
-                <span class="card-suit">{{ cartaSiguiente.palo }}</span>
+                <span class="card-val">{{ cartaSiguiente()?.nombre }}</span>
+                <span class="card-suit">{{ cartaSiguiente()?.palo }}</span>
               </span>
-              <span class="card-center-suit">{{ cartaSiguiente.palo }}</span>
+              <span class="card-center-suit">{{ cartaSiguiente()?.palo }}</span>
               <span class="card-corner card-bottom-right">
-                <span class="card-val">{{ cartaSiguiente.nombre }}</span>
-                <span class="card-suit">{{ cartaSiguiente.palo }}</span>
+                <span class="card-val">{{ cartaSiguiente()?.nombre }}</span>
+                <span class="card-suit">{{ cartaSiguiente()?.palo }}</span>
               </span>
             </div>
           </div>
@@ -94,36 +94,36 @@
 
   </div>
 
-  @if (estado === 'fin') {
+  @if (estado() === 'fin') {
     <div class="fin-overlay">
       <div class="fin-card">
         <div class="fin-icon">
-          @if (cartasAcertadas > cartasTotales / 2) { 🏆 } @else { 💀 }
+          @if (cartasAcertadas() > cartasTotales() / 2) { 🏆 } @else { 💀 }
         </div>
         <h2 class="fin-title">
-          @if (cartasAcertadas > cartasTotales / 2) { ¡Muy bien! } @else { Game Over }
+          @if (cartasAcertadas() > cartasTotales() / 2) { ¡Muy bien! } @else { Game Over }
         </h2>
 
         <div class="fin-stats">
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ cartasAcertadas }}</span>
+            <span class="fin-stat-num">{{ cartasAcertadas() }}</span>
             <span class="fin-stat-label">Aciertos</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ cartasTotales }}</span>
+            <span class="fin-stat-num">{{ cartasTotales() }}</span>
             <span class="fin-stat-label">Jugadas</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ porcentajeAciertos }}%</span>
+            <span class="fin-stat-num">{{ porcentajeAciertos() }}%</span>
             <span class="fin-stat-label">Precisión</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ tiempoFormateado }}</span>
+            <span class="fin-stat-num">{{ tiempoFormateado() }}</span>
             <span class="fin-stat-label">Tiempo</span>
           </div>
         </div>
 
-        @if (guardando) {
+        @if (guardando()) {
           <span class="saving-text">Guardando partida...</span>
         }
 

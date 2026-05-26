@@ -33,7 +33,7 @@
 
   <div class="chat-messages">
 
-    @if (cargando) {
+    @if (cargando()) {
       <div class="chat-loading">
         <div class="loading-dots">
           <span></span><span></span><span></span>
@@ -41,8 +41,8 @@
       </div>
     }
 
-    @if (error) {
-      <div class="chat-error">{{ error }}</div>
+    @if (error()) {
+      <div class="chat-error">{{ error() }}</div>
     }
 
     @if (!cargando && mensajes.length === 0) {
@@ -51,7 +51,7 @@
       </div>
     }
 
-    @for (msg of mensajes; track msg.id) {
+    @for (msg of mensajes(); track msg.id) {
 
       @if (!esMio(msg)) {
         <div class="message-row">
@@ -91,7 +91,7 @@
 
   <div class="chat-input-area">
     
-    @if (!userId) {
+    @if (!userId()) {
       <div class="chat-locked">
         🔒 Iniciá sesión para participar en el chat
       </div>
@@ -113,10 +113,10 @@
           (keydown)="onKeyDown($event)"
           placeholder="Escribe un mensaje en el chat global..."
           rows="1"
-          [disabled]="enviando"
+          [disabled]="enviando()"
           maxlength="300"
         ></textarea>
-        <button class="btn-send" (click)="enviar()" [disabled]="!nuevoMensaje.trim() || enviando">
+        <button class="btn-send" (click)="enviar()" [disabled]="!nuevoMensaje().trim() || enviando">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/>
           </svg>

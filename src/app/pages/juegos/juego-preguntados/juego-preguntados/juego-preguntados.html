@@ -1,30 +1,30 @@
 <div class="game-wrapper">
 
-  @if (estado === 'cargando') {
+  @if (estado() === 'cargando') {
     <div class="loading-screen">
       <div class="loading-dots"><span></span><span></span><span></span></div>
       <p>Cargando países...</p>
     </div>
   }
 
-  @if (estado === 'jugando' || estado === 'respondido') {
+  @if (estado() === 'jugando' || estado() === 'respondido') {
     <div class="game-header">
       <div class="header-stat">
         <span class="stat-label">Pregunta</span>
-        <span class="stat-value">{{ preguntaActual + 1 }} / {{ totalPreguntas }}</span>
+        <span class="stat-value">{{ preguntaActual() + 1 }} / {{ totalPreguntas }}</span>
       </div>
       <div class="header-stat">
         <span class="stat-label">Correctas</span>
-        <span class="stat-value success">{{ correctas }}</span>
+        <span class="stat-value success">{{ correctas() }}</span>
       </div>
       <div class="header-stat">
         <span class="stat-label">Tiempo</span>
-        <span class="stat-value">{{ tiempoFormateado }}</span>
+        <span class="stat-value">{{ tiempoFormateado() }}</span>
       </div>
     </div>
 
     <div class="progress-bar">
-      <div class="progress-fill" [style.width.%]="progresoBarWidth"></div>
+      <div class="progress-fill" [style.width.%]="progresoBarWidth()"></div>
     </div>
 
     <div class="timer-area">
@@ -33,33 +33,33 @@
           <circle cx="22" cy="22" r="18" fill="none" stroke-width="3" class="timer-track"/>
           <circle cx="22" cy="22" r="18" fill="none" stroke-width="3"
             class="timer-fill"
-            [class.timer-warning]="timerSegundos <= 5"
+            [class.timer-warning]="timerSegundos() <= 5"
             [style.stroke-dasharray]="113"
-            [style.stroke-dashoffset]="113 - (porcentajeTimer / 100) * 113"
+            [style.stroke-dashoffset]="113 - (porcentajeTimer() / 100) * 113"
           />
         </svg>
-        <span class="timer-num" [class.timer-warning]="timerSegundos <= 5">{{ timerSegundos }}</span>
+        <span class="timer-num" [class.timer-warning]="timerSegundos() <= 5">{{ timerSegundos() }}</span>
       </div>
     </div>
 
-    @if (paisActual) {
+    @if (paisActual()) {
       <div class="map-area">
         <div class="map-card">
           <img
-            [src]="getMapUrl(paisActual.code)"
-            [alt]="estado === 'respondido' ? paisActual.name : '?'"
+            [src]="getMapUrl(paisActual()?.code ?? '')"
+            [alt]="estado() === 'respondido' ? paisActual.name : '?'"
             class="map-img"
             (error)="$any($event.target).src='https://via.placeholder.com/300x300/1c2438/8892a4?text=?'"
           />
-          @if (estado === 'jugando') {
+          @if (estado() === 'jugando') {
             <div class="map-overlay">
               <span>¿Qué país es este?</span>
             </div>
           }
-          @if (estado === 'respondido') {
+          @if (estado() === 'respondido') {
             <div class="map-revealed">
-              <img [src]="getFlagUrl(paisActual.code)" [alt]="paisActual.name" class="flag-revealed" />
-              <span>{{ paisActual.name }}</span>
+              <img [src]="getFlagUrl(paisActual()?.code ?? '')" [alt]="paisActual()?.name" class="flag-revealed" />
+              <span>{{ paisActual()?.name }}</span>
             </div>
           }
         </div>
@@ -67,13 +67,13 @@
     }
 
     <div class="options-grid">
-      @for (opcion of opciones; track opcion.code) {
+      @for (opcion of opciones(); track opcion.code) {
         <button
           class="option-btn"
           [class.option-correct]="esRespuestaCorrecta(opcion)"
           [class.option-wrong]="esRespuestaIncorrecta(opcion)"
-          [class.option-disabled]="estado === 'respondido'"
-          [disabled]="estado === 'respondido'"
+          [class.option-disabled]="estado() === 'respondido'"
+          [disabled]="estado() === 'respondido'"
           (click)="responder(opcion)"
         >
           <img [src]="getFlagUrl(opcion.code)" [alt]="opcion.name" class="option-flag" />
@@ -93,43 +93,43 @@
       }
     </div>
 
-    @if (estado === 'respondido' && !respuestaSeleccionada) {
+    @if (estado() === 'respondido' && !respuestaSeleccionada) {
       <div class="timeout-msg">
-        ⏱ ¡Tiempo agotado! Era <strong>{{ paisActual?.name }}</strong>
+        ⏱ ¡Tiempo agotado! Era <strong>{{ paisActual()?.name }}</strong>
       </div>
     }
   }
 
-  @if (estado === 'fin') {
+  @if (estado() === 'fin') {
     <div class="fin-overlay">
       <div class="fin-card">
         <div class="fin-icon">
-          @if (correctas >= 7) { 🏆 } @else if (correctas >= 5) { 👍 } @else { 💀 }
+          @if (correctas() >= 7) { 🏆 } @else if (correctas() >= 5) { 👍 } @else { 💀 }
         </div>
         <h2 class="fin-title">
-          @if (correctas >= 7) { ¡Excelente! } @else if (correctas >= 5) { ¡Bien! } @else { Hay que mejorar }
+          @if (correctas() >= 7) { ¡Excelente! } @else if (correctas() >= 5) { ¡Bien! } @else { Hay que mejorar }
         </h2>
 
         <div class="fin-stats">
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ correctas }}</span>
+            <span class="fin-stat-num">{{ correctas() }}</span>
             <span class="fin-stat-label">Correctas</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ totalPreguntas - correctas }}</span>
+            <span class="fin-stat-num">{{ totalPreguntas - correctas() }}</span>
             <span class="fin-stat-label">Incorrectas</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ porcentajeAciertos }}%</span>
+            <span class="fin-stat-num">{{ porcentajeAciertos() }}%</span>
             <span class="fin-stat-label">Precisión</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-stat-num">{{ tiempoFormateado }}</span>
+            <span class="fin-stat-num">{{ tiempoFormateado() }}</span>
             <span class="fin-stat-label">Tiempo</span>
           </div>
         </div>
 
-        @if (guardando) {
+        @if (guardando()) {
           <span class="saving-text">Guardando partida...</span>
         }
 

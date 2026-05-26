@@ -1,6 +1,6 @@
 <div class="tetris-wrapper">
 
-  @if (estado === 'inicio') {
+  @if (estado() === 'inicio') {
     <div class="screen-overlay">
       <div class="screen-card">
         <div class="screen-icon">🟪</div>
@@ -18,7 +18,7 @@
     </div>
   }
 
-  @if (estado === 'pausado') {
+  @if (estado() === 'pausado') {
     <div class="screen-overlay">
       <div class="screen-card">
         <div class="screen-icon">⏸</div>
@@ -29,26 +29,26 @@
     </div>
   }
 
-  @if (estado === 'fin') {
+  @if (estado() === 'fin') {
     <div class="screen-overlay">
       <div class="screen-card">
         <div class="screen-icon">💀</div>
         <h2>GAME OVER</h2>
         <div class="fin-stats">
           <div class="fin-stat">
-            <span class="fin-num">{{ puntuacion }}</span>
+            <span class="fin-num">{{ puntuacion() }}</span>
             <span class="fin-label">Puntuación</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-num">{{ lineas }}</span>
+            <span class="fin-num">{{ lineas() }}</span>
             <span class="fin-label">Líneas</span>
           </div>
           <div class="fin-stat">
-            <span class="fin-num">{{ nivel }}</span>
+            <span class="fin-num">{{ nivel() }}</span>
             <span class="fin-label">Nivel</span>
           </div>
         </div>
-        @if (guardando) {
+        @if (guardando()) {
           <span class="saving-text">Guardando partida...</span>
         }
         <button class="btn-start" (click)="iniciarJuego()">Jugar de nuevo</button>
@@ -61,18 +61,18 @@
     <div class="side-panel side-panel--left">
       <div class="panel-block">
         <span class="panel-label">PUNTOS</span>
-        <span class="panel-value">{{ puntuacion }}</span>
+        <span class="panel-value">{{ puntuacion() }}</span>
       </div>
       <div class="panel-block">
         <span class="panel-label">LÍNEAS</span>
-        <span class="panel-value">{{ lineas }}</span>
+        <span class="panel-value">{{ lineas() }}</span>
       </div>
       <div class="panel-block">
         <span class="panel-label">NIVEL</span>
-        <span class="panel-value accent">{{ nivel }}</span>
+        <span class="panel-value accent">{{ nivel() }}</span>
       </div>
 
-      @if (estado === 'jugando') {
+      @if (estado() === 'jugando') {
         <button class="btn-pause" (click)="pausar()">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clip-rule="evenodd"/>
@@ -83,7 +83,7 @@
 
     <div class="board-container">
       <div class="board">
-        @for (fila of tablero; let fy = $index; track fy) {
+        @for (fila of tablero(); let fy = $index; track fy) {
           @for (celda of fila; let fx = $index; track fx) {
             <div
               class="cell"
@@ -98,7 +98,7 @@
       <div class="panel-block">
         <span class="panel-label">SIGUIENTE</span>
         <div class="next-board">
-          @for (fila of getSiguienteTablero(); let fy = $index; track fy) {
+          @for (fila of siguienteTablero(); let fy = $index; track fy) {
             @for (celda of fila; let fx = $index; track fx) {
               <div
                 class="next-cell"
@@ -112,7 +112,7 @@
 
   </div>
 
-  @if (estado === 'jugando') {
+  @if (estado() === 'jugando') {
     <div class="touch-controls">
       <div class="touch-row">
         <button class="touch-btn" (click)="btnRotar()">
