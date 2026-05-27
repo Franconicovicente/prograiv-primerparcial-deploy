@@ -43,8 +43,8 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/encuesta/encuesta/encuesta').then((m) => m.EncuestaComponent)
     },
     {
-        path: 'resultado-encuestas',
-        loadComponent: () => import('./pages/resultado-encuestas/resultado-encuestas/resultado-encuestas').then((m) => m.ResultadosEncuestaComponent)
+        path: 'resultado-encuestas', 
+        loadComponent: () => import('./pages/resultado-encuestas/resultado-encuestas/resultado-encuestas').then(m => m.ResultadosEncuestaComponent), canActivate: [adminGuard]
     },
     {
         path: '',
