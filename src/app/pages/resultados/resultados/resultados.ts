@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { NgIf, NgFor, NgClass, DecimalPipe, SlicePipe } from '@angular/common';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { SlicePipe } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth';
 
 export interface FilaResultado {
@@ -15,29 +15,45 @@ export interface FilaResultado {
 @Component({
   selector: 'app-resultados',
   standalone: true,
-  imports: [NgIf, NgFor, SlicePipe],
+  imports: [SlicePipe],
   templateUrl: './resultados.html',
   styleUrls: ['./resultados.css']
 })
 export class ResultadosComponent implements OnInit {
   private authService = inject(AuthService);
-  private cdr = inject(ChangeDetectorRef);
 
-  cargando = true;
-  tabActiva: 'ahorcado' | 'mayor-menor' | 'preguntados' | 'tetris' = 'tetris';
+  cargando = signal<boolean>(true);
+  tabActiva = signal<'ahorcado' | 'mayor-menor' | 'preguntados' | 'tetris'>('tetris');
 
-  rankingTetris: FilaResultado[] = [];
-  rankingAhorcado: FilaResultado[] = [];
-  rankingMayorMenor: FilaResultado[] = [];
-  rankingPreguntados: FilaResultado[] = [];
+  rankingTetris = signal<FilaResultado[]>([]);
+  rankingAhorcado = signal<FilaResultado[]>([]);
+  rankingMayorMenor = signal<FilaResultado[]>([]);
+  rankingPreguntados = signal<FilaResultado[]>([]);
 
   private userId = '';
+
+  rankingActivo = computed<FilaResultado[]>(() => {
+    switch (this.tabActiva()) { // 👈 Leemos el signal usando ()
+      case 'tetris':      return this.rankingTetris();
+      case 'ahorcado':    return this.rankingAhorcado();
+      case 'mayor-menor': return this.rankingMayorMenor();
+      case 'preguntados': return this.rankingPreguntados();
+    }
+  });
+
+  columnasActivas = computed<{ principal: string; secundaria: string; extra: string }>(() => {
+    switch (this.tabActiva()) {
+      case 'tetris':      return { principal: 'Puntuación', secundaria: 'Líneas', extra: 'Nivel' };
+      case 'ahorcado':    return { principal: 'Letras usadas', secundaria: 'Tiempo (s)', extra: 'Resultado' };
+      case 'mayor-menor': return { principal: 'Aciertos', secundaria: 'Jugadas', extra: 'Precisión' };
+      case 'preguntados': return { principal: 'Correctas', secundaria: 'Tiempo (s)', extra: 'Precisión' };
+    }
+  });
 
   async ngOnInit(): Promise<void> {
     this.userId = (await this.authService.getUserId()) ?? '';
     await this.cargarTodos();
-    this.cargando = false;
-    this.cdr.detectChanges();
+    this.cargando.set(false);
   }
 
   private async cargarTodos(): Promise<void> {
@@ -56,7 +72,7 @@ export class ResultadosComponent implements OnInit {
       .order('puntuacion', { ascending: false })
       .limit(50);
 
-    this.rankingTetris = (data || []).map((r: any, i: number) => ({
+    const mapeado = (data || []).map((r: any, i: number) => ({
       posicion: i + 1,
       nombre: `${r.usuarios?.nombre ?? 'Anónimo'} ${r.usuarios?.apellido ?? ''}`.trim(),
       puntajePrincipal: r.puntuacion,
@@ -65,6 +81,8 @@ export class ResultadosComponent implements OnInit {
       fecha: r.created_at,
       esPropio: r.user_id === this.userId
     }));
+
+    this.rankingTetris.set(mapeado); 
   }
 
   private async cargarAhorcado(): Promise<void> {
@@ -74,7 +92,6 @@ export class ResultadosComponent implements OnInit {
       .order('tiempo_segundos', { ascending: true })
       .limit(50);
 
-    // Ordenar: primero los que ganaron, luego por menos letras usadas
     const ganadores = (data || []).filter((r: any) => r.resultado === 'ganó');
     const perdedores = (data || []).filter((r: any) => r.resultado !== 'ganó');
     const ordenado = [
@@ -82,7 +99,7 @@ export class ResultadosComponent implements OnInit {
       ...perdedores
     ];
 
-    this.rankingAhorcado = ordenado.map((r: any, i: number) => ({
+    const mapeado = ordenado.map((r: any, i: number) => ({
       posicion: i + 1,
       nombre: `${r.usuarios?.nombre ?? 'Anónimo'} ${r.usuarios?.apellido ?? ''}`.trim(),
       puntajePrincipal: r.letras_seleccionadas,
@@ -91,6 +108,8 @@ export class ResultadosComponent implements OnInit {
       fecha: r.created_at,
       esPropio: r.user_id === this.userId
     }));
+
+    this.rankingAhorcado.set(mapeado); 
   }
 
   private async cargarMayorMenor(): Promise<void> {
@@ -100,7 +119,7 @@ export class ResultadosComponent implements OnInit {
       .order('cartas_acertadas', { ascending: false })
       .limit(50);
 
-    this.rankingMayorMenor = (data || []).map((r: any, i: number) => ({
+    const mapeado = (data || []).map((r: any, i: number) => ({
       posicion: i + 1,
       nombre: `${r.usuarios?.nombre ?? 'Anónimo'} ${r.usuarios?.apellido ?? ''}`.trim(),
       puntajePrincipal: r.cartas_acertadas,
@@ -109,6 +128,8 @@ export class ResultadosComponent implements OnInit {
       fecha: r.created_at,
       esPropio: r.user_id === this.userId
     }));
+
+    this.rankingMayorMenor.set(mapeado); 
   }
 
   private async cargarPreguntados(): Promise<void> {
@@ -118,7 +139,7 @@ export class ResultadosComponent implements OnInit {
       .order('respuestas_correctas', { ascending: false })
       .limit(50);
 
-    this.rankingPreguntados = (data || []).map((r: any, i: number) => ({
+    const mapeado = (data || []).map((r: any, i: number) => ({
       posicion: i + 1,
       nombre: `${r.usuarios?.nombre ?? 'Anónimo'} ${r.usuarios?.apellido ?? ''}`.trim(),
       puntajePrincipal: r.respuestas_correctas,
@@ -127,28 +148,12 @@ export class ResultadosComponent implements OnInit {
       fecha: r.created_at,
       esPropio: r.user_id === this.userId
     }));
+
+    this.rankingPreguntados.set(mapeado); 
   }
 
   setTab(tab: 'ahorcado' | 'mayor-menor' | 'preguntados' | 'tetris'): void {
-    this.tabActiva = tab;
-  }
-
-  get rankingActivo(): FilaResultado[] {
-    switch (this.tabActiva) {
-      case 'tetris':      return this.rankingTetris;
-      case 'ahorcado':    return this.rankingAhorcado;
-      case 'mayor-menor': return this.rankingMayorMenor;
-      case 'preguntados': return this.rankingPreguntados;
-    }
-  }
-
-  get columnasActivas(): { principal: string; secundaria: string; extra: string } {
-    switch (this.tabActiva) {
-      case 'tetris':      return { principal: 'Puntuación', secundaria: 'Líneas', extra: 'Nivel' };
-      case 'ahorcado':    return { principal: 'Letras usadas', secundaria: 'Tiempo (s)', extra: 'Resultado' };
-      case 'mayor-menor': return { principal: 'Aciertos', secundaria: 'Jugadas', extra: 'Precisión' };
-      case 'preguntados': return { principal: 'Correctas', secundaria: 'Tiempo (s)', extra: 'Precisión' };
-    }
+    this.tabActiva.set(tab); 
   }
 
   getMedalla(pos: number): string {

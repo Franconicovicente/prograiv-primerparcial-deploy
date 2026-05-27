@@ -2,13 +2,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
-import { NgIf } from '@angular/common';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
   standalone: true, // ◄ Clave en Angular moderno
-  imports: [ReactiveFormsModule, RouterLink, NgIf], 
+  imports: [ReactiveFormsModule, RouterLink], 
   templateUrl: './registro.html',
   styleUrls: ['./registro.css']
 })

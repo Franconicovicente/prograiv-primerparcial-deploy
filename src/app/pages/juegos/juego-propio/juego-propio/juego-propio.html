@@ -1,146 +1,151 @@
 <div class="tetris-wrapper">
 
-  <!-- Pantalla de inicio -->
-  <div class="screen-overlay" *ngIf="estado === 'inicio'">
-    <div class="screen-card">
-      <div class="screen-icon">🟪</div>
-      <h2>TETRA</h2>
-      <p>Apilá las piezas y completá líneas para sumar puntos. El juego termina cuando las piezas llegan al tope.</p>
-      <div class="controls-hint">
-        <div class="hint-row"><kbd>←→</kbd><span>Mover</span></div>
-        <div class="hint-row"><kbd>↑</kbd><span>Rotar</span></div>
-        <div class="hint-row"><kbd>↓</kbd><span>Bajar</span></div>
-        <div class="hint-row"><kbd>Space</kbd><span>Caída dura</span></div>
-        <div class="hint-row"><kbd>P</kbd><span>Pausa</span></div>
+  @if (estado() === 'inicio') {
+    <div class="screen-overlay">
+      <div class="screen-card">
+        <div class="screen-icon">🟪</div>
+        <h2>TETRA</h2>
+        <p>Apilá las piezas y completá líneas para sumar puntos. El juego termina cuando las piezas llegan al tope.</p>
+        <div class="controls-hint">
+          <div class="hint-row"><kbd>←→</kbd><span>Mover</span></div>
+          <div class="hint-row"><kbd>↑</kbd><span>Rotar</span></div>
+          <div class="hint-row"><kbd>↓</kbd><span>Bajar</span></div>
+          <div class="hint-row"><kbd>Space</kbd><span>Caída dura</span></div>
+          <div class="hint-row"><kbd>P</kbd><span>Pausa</span></div>
+        </div>
+        <button class="btn-start" (click)="iniciarJuego()">Comenzar</button>
       </div>
-      <button class="btn-start" (click)="iniciarJuego()">Comenzar</button>
     </div>
-  </div>
+  }
 
-  <!-- Pantalla de pausa -->
-  <div class="screen-overlay" *ngIf="estado === 'pausado'">
-    <div class="screen-card">
-      <div class="screen-icon">⏸</div>
-      <h2>PAUSADO</h2>
-      <button class="btn-start" (click)="pausar()">Continuar</button>
-      <button class="btn-secondary" (click)="iniciarJuego()">Reiniciar</button>
-    </div>
-  </div>
-
-  <!-- Pantalla de fin -->
-  <div class="screen-overlay" *ngIf="estado === 'fin'">
-    <div class="screen-card">
-      <div class="screen-icon">💀</div>
-      <h2>GAME OVER</h2>
-      <div class="fin-stats">
-        <div class="fin-stat">
-          <span class="fin-num">{{ puntuacion }}</span>
-          <span class="fin-label">Puntuación</span>
-        </div>
-        <div class="fin-stat">
-          <span class="fin-num">{{ lineas }}</span>
-          <span class="fin-label">Líneas</span>
-        </div>
-        <div class="fin-stat">
-          <span class="fin-num">{{ nivel }}</span>
-          <span class="fin-label">Nivel</span>
-        </div>
+  @if (estado() === 'pausado') {
+    <div class="screen-overlay">
+      <div class="screen-card">
+        <div class="screen-icon">⏸</div>
+        <h2>PAUSADO</h2>
+        <button class="btn-start" (click)="pausar()">Continuar</button>
+        <button class="btn-secondary" (click)="iniciarJuego()">Reiniciar</button>
       </div>
-      <span class="saving-text" *ngIf="guardando">Guardando partida...</span>
-      <button class="btn-start" (click)="iniciarJuego()">Jugar de nuevo</button>
     </div>
-  </div>
+  }
 
-  <!-- Juego principal -->
+  @if (estado() === 'fin') {
+    <div class="screen-overlay">
+      <div class="screen-card">
+        <div class="screen-icon">💀</div>
+        <h2>GAME OVER</h2>
+        <div class="fin-stats">
+          <div class="fin-stat">
+            <span class="fin-num">{{ puntuacion() }}</span>
+            <span class="fin-label">Puntuación</span>
+          </div>
+          <div class="fin-stat">
+            <span class="fin-num">{{ lineas() }}</span>
+            <span class="fin-label">Líneas</span>
+          </div>
+          <div class="fin-stat">
+            <span class="fin-num">{{ nivel() }}</span>
+            <span class="fin-label">Nivel</span>
+          </div>
+        </div>
+        @if (guardando()) {
+          <span class="saving-text">Guardando partida...</span>
+        }
+        <button class="btn-start" (click)="iniciarJuego()">Jugar de nuevo</button>
+      </div>
+    </div>
+  }
+
   <div class="game-layout">
 
-    <!-- Panel izquierdo -->
     <div class="side-panel side-panel--left">
       <div class="panel-block">
         <span class="panel-label">PUNTOS</span>
-        <span class="panel-value">{{ puntuacion }}</span>
+        <span class="panel-value">{{ puntuacion() }}</span>
       </div>
       <div class="panel-block">
         <span class="panel-label">LÍNEAS</span>
-        <span class="panel-value">{{ lineas }}</span>
+        <span class="panel-value">{{ lineas() }}</span>
       </div>
       <div class="panel-block">
         <span class="panel-label">NIVEL</span>
-        <span class="panel-value accent">{{ nivel }}</span>
+        <span class="panel-value accent">{{ nivel() }}</span>
       </div>
 
-      <!-- Botón pausa -->
-      <button class="btn-pause" (click)="pausar()" *ngIf="estado === 'jugando'">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clip-rule="evenodd"/>
-        </svg>
-      </button>
+      @if (estado() === 'jugando') {
+        <button class="btn-pause" (click)="pausar()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      }
     </div>
 
-    <!-- Tablero -->
     <div class="board-container">
       <div class="board">
-        <ng-container *ngFor="let fila of tablero; let fy = index">
-          <div
-            *ngFor="let celda of fila; let fx = index"
-            class="cell"
-            [ngClass]="getCeldaClass(celda)"
-          ></div>
-        </ng-container>
+        @for (fila of tablero(); let fy = $index; track fy) {
+          @for (celda of fila; let fx = $index; track fx) {
+            <div
+              class="cell"
+              [ngClass]="getCeldaClass(celda)"
+            ></div>
+          }
+        }
       </div>
     </div>
 
-    <!-- Panel derecho -->
     <div class="side-panel side-panel--right">
       <div class="panel-block">
         <span class="panel-label">SIGUIENTE</span>
         <div class="next-board">
-          <ng-container *ngFor="let fila of getSiguienteTablero(); let fy = index">
-            <div
-              *ngFor="let celda of fila; let fx = index"
-              class="next-cell"
-              [ngClass]="getCeldaClass(celda)"
-            ></div>
-          </ng-container>
+          @for (fila of siguienteTablero(); let fy = $index; track fy) {
+            @for (celda of fila; let fx = $index; track fx) {
+              <div
+                class="next-cell"
+                [ngClass]="getCeldaClass(celda)"
+              ></div>
+            }
+          }
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Controles táctiles -->
-  <div class="touch-controls" *ngIf="estado === 'jugando'">
-    <div class="touch-row">
-      <button class="touch-btn" (click)="btnRotar()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
-        </svg>
-      </button>
+  @if (estado() === 'jugando') {
+    <div class="touch-controls">
+      <div class="touch-row">
+        <button class="touch-btn" (click)="btnRotar()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
+          </svg>
+        </button>
+      </div>
+      <div class="touch-row">
+        <button class="touch-btn" (click)="btnIzquierda()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+        <button class="touch-btn touch-btn--drop" (click)="btnCaer()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v16.19l6.22-6.22a.75.75 0 1 1 1.06 1.06l-7.5 7.5a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 1 1 1.06-1.06l6.22 6.22V3a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+        <button class="touch-btn" (click)="btnDerecha()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      </div>
+      <div class="touch-row">
+        <button class="touch-btn touch-btn--down" (click)="btnBajar()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      </div>
     </div>
-    <div class="touch-row">
-      <button class="touch-btn" (click)="btnIzquierda()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path fill-rule="evenodd" d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z" clip-rule="evenodd"/>
-        </svg>
-      </button>
-      <button class="touch-btn touch-btn--drop" (click)="btnCaer()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v16.19l6.22-6.22a.75.75 0 1 1 1.06 1.06l-7.5 7.5a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 1 1 1.06-1.06l6.22 6.22V3a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd"/>
-        </svg>
-      </button>
-      <button class="touch-btn" (click)="btnDerecha()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd"/>
-        </svg>
-      </button>
-    </div>
-    <div class="touch-row">
-      <button class="touch-btn touch-btn--down" (click)="btnBajar()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd"/>
-        </svg>
-      </button>
-    </div>
-  </div>
+  }
 
 </div>

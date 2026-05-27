@@ -21,9 +21,11 @@
               [class.input-error]="registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched"
             />
           </div>
-          <span class="error-msg" *ngIf="registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched">
-            El nombre es requerido.
-          </span>
+          @if (registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched) {
+            <span class="error-msg">
+              El nombre es requerido.
+            </span>
+          }
         </div>
       </div>
 
@@ -42,9 +44,11 @@
               [class.input-error]="registroForm.get('apellido')?.invalid && registroForm.get('apellido')?.touched"
             />
           </div>
-          <span class="error-msg" *ngIf="registroForm.get('apellido')?.invalid && registroForm.get('apellido')?.touched">
-            El apellido es requerido.
-          </span>
+          @if (registroForm.get('apellido')?.invalid && registroForm.get('apellido')?.touched) {
+            <span class="error-msg">
+              El apellido es requerido.
+            </span>
+          }
         </div>
       </div>
 
@@ -63,9 +67,11 @@
               [class.input-error]="registroForm.get('email')?.invalid && registroForm.get('email')?.touched"
             />
           </div>
-          <span class="error-msg" *ngIf="registroForm.get('email')?.invalid && registroForm.get('email')?.touched">
-            Ingresá un correo válido.
-          </span>
+          @if (registroForm.get('email')?.invalid && registroForm.get('email')?.touched) {
+            <span class="error-msg">
+              Ingresá un correo válido.
+            </span>
+          }
         </div>
       </div>
 
@@ -84,9 +90,11 @@
               [class.input-error]="registroForm.get('password')?.invalid && registroForm.get('password')?.touched"
             />
           </div>
-          <span class="error-msg" *ngIf="registroForm.get('password')?.invalid && registroForm.get('password')?.touched">
-            Mínimo 6 caracteres.
-          </span>
+          @if (registroForm.get('password')?.invalid && registroForm.get('password')?.touched) {
+            <span class="error-msg">
+              Mínimo 6 caracteres.
+            </span>
+          }
         </div>
 
         <div class="form-group">
@@ -103,9 +111,11 @@
               [class.input-error]="registroForm.get('edad')?.invalid && registroForm.get('edad')?.touched"
             />
           </div>
-          <span class="error-msg" *ngIf="registroForm.get('edad')?.invalid && registroForm.get('edad')?.touched">
-            Ingresá una edad válida.
-          </span>
+          @if (registroForm.get('edad')?.invalid && registroForm.get('edad')?.touched) {
+            <span class="error-msg">
+              Ingresá una edad válida.
+            </span>
+          }
         </div>
       </div>
 
@@ -130,5 +140,4 @@
       </p>
     </form>
   </div>
-
 </div>
