@@ -15,40 +15,49 @@ export class AuthService {
 
   // register
   registrarUsuario(datosRegistro: any): Observable<any> {
-    const { email, password, nombre, apellido, edad } = datosRegistro;
+  const { email, password, nombre, apellido, edad } = datosRegistro;
 
-    return from(this.supabase.auth.signUp({ email, password })).pipe(
-      switchMap((authResponse) => {
-        if (authResponse.error) return throwError(() => authResponse.error);
+  // Modificamos el signUp para incluir los metadatos
+  return from(
+    this.supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        data: {
+          nombre: nombre,     // <-- Se guarda en los metadatos de autenticación
+          apellido: apellido  // <-- Se guarda en los metadatos de autenticación
+        }
+      }
+    })
+  ).pipe(
+    switchMap((authResponse) => {
+      if (authResponse.error) return throwError(() => authResponse.error);
 
-        const userUid = authResponse.data.user?.id;
-        if (!userUid) return throwError(() => new Error('No se generó el ID de usuario.'));
+      const userUid = authResponse.data.user?.id;
+      if (!userUid) return throwError(() => new Error('No se generó el ID de usuario.'));
 
-        return from(
-          this.supabase
-            .from('usuarios')
-            .insert([
-              {
-                id: userUid,        
-                email: email,       
-                nombre: nombre,     
-                apellido: apellido, 
-                edad: edad          
-                
-              }
-            ])
-        ).pipe(
-          switchMap((dbResponse) => {
-           
-            if (dbResponse.error) return throwError(() => dbResponse.error);
-            
-           
-            return from([authResponse.data]);
-          })
-        );
-      })
-    );
-  }
+      return from(
+        this.supabase
+          .from('usuarios')
+          .insert([
+            {
+              id: userUid,        
+              email: email,       
+              nombre: nombre,     
+              apellido: apellido, 
+              edad: edad          
+            }
+          ])
+      ).pipe(
+        switchMap((dbResponse) => {
+          if (dbResponse.error) return throwError(() => dbResponse.error);
+          
+          return from([authResponse.data]);
+        })
+      );
+    })
+  );
+}
 
   // iniciar sesion
 
@@ -78,6 +87,7 @@ export class AuthService {
     if (supabaseUser) {
       this.usuarioLogueado$.next({
         nombre: supabaseUser.user_metadata?.['nombre'] || supabaseUser.email.split('@')[0],
+        apellido: supabaseUser.user_metadata?.['apellido'] || '',
         email: supabaseUser.email
       });
     } else {

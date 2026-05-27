@@ -1,7 +1,9 @@
 <header class="main-navbar">
   <div class="nav-container">
     <div class="nav-logo">
-      <a routerLink="/home">FrancoVicente</a>
+      <a routerLink="/home">
+        <img src="loro.png" alt="Logo de Loro" width="30" height="30">
+      </a>
     </div>
 
     <nav class="nav-menu">
@@ -18,7 +20,7 @@
   @if (usuario()) {
     <div class="user-logged-info">
       <span class="nav-icon">👤</span> 
-      <span class="user-name">¡Hola, {{ usuario()?.nombre }}!</span>
+      <span class="user-name">Hola, {{usuario()?.nombre}} {{usuario()?.apellido}}!</span>
       <button (click)="onCerrarSesion()" class="btn-logout"
       routerLink="/home"
       >Cerrar Sesión</button>
