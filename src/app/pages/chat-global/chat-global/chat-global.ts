@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy, inject, ViewChild, ElementRef, AfterViewC
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth';
-import { ChatService, Mensaje } from '../../../services/chat-global/chat-global';
+import { ChatService } from '../../../services/chat-global/chat-global';
+import { Mensaje } from '../../../models/chat-model';
 
 @Component({
   selector: 'app-chat-global',

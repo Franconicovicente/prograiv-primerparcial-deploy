@@ -88,6 +88,7 @@ export class AuthService {
   async cerrarSesion(): Promise<void>{
     await this.supabase.auth.signOut();
     this.usuarioLogueado$.next(null); 
+    window.location.href = '/home'
   }
 
   async getUserId(): Promise<string | null> {
