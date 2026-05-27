@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject, NgZone, HostListener, signal, com
 import { NgClass } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth';
 import { PartidaJuegoPropioService } from '../../../../services/juego-propio/juego-propio';
+import { Celda, Pieza } from '../../../../models/tetris.model';
 
 const COLS = 10;
 const ROWS = 20;
@@ -22,17 +23,6 @@ const PIEZAS: number[][][] = [
   [[0,0,7],[7,7,7]],            // L
 ];
 
-export interface Celda {
-  tipo: number;
-  ghost: boolean;
-}
-
-export interface Pieza {
-  forma: number[][];
-  x: number;
-  y: number;
-  tipo: number;
-}
 
 function crearTablero(): Celda[][] {
   return Array.from({ length: ROWS }, () =>

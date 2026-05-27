@@ -6,13 +6,8 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
-<<<<<<< HEAD
   standalone: true, 
-  imports: [ReactiveFormsModule, RouterLink, NgIf], 
-=======
-  standalone: true, // ◄ Clave en Angular moderno
   imports: [ReactiveFormsModule, RouterLink], 
->>>>>>> 0e1c908ddb5021f6c7bbc30f27b582d57bca439b
   templateUrl: './registro.html',
   styleUrls: ['./registro.css']
 })

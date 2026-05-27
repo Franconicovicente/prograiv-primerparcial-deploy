@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject, NgZone, signal, computed } from '
 import { AuthService } from '../../../../services/auth/auth';
 import { PartidaPreguntadosService } from '../../../../services/partida-preguntados/partida-preguntados';
 import { Router } from '@angular/router';
+import { PaisesService } from '../../../../services/paises/paises';
 
 const TOTAL_PREGUNTAS = 10;
 const TIMER_SEGUNDOS = 15;
@@ -24,6 +25,7 @@ export class PreguntadosComponent implements OnInit, OnDestroy {
   private partidaService = inject(PartidaPreguntadosService);
   private ngZone = inject(NgZone);
   private router = inject(Router);
+  private paisesService = inject(PaisesService)
 
   // ── Signals de Datos ─────────────────────────────────────
   todosPaises = signal<Pais[]>([]);
@@ -71,31 +73,17 @@ export class PreguntadosComponent implements OnInit, OnDestroy {
 
   // ── Ciclo de Vida ────────────────────────────────────────
   async ngOnInit(): Promise<void> {
-    this.userId = (await this.authService.getUserId()) ?? '';
-    await this.cargarPaises();
-    this.iniciarPartida();
-  }
+  this.userId = (await this.authService.getUserId()) ?? '';
+  await this.paisesService.cargarPaises();
+  this.iniciarPartida();
+}
 
   ngOnDestroy(): void {
     this.limpiarTimers();
   }
 
   // ── Métodos de Carga y Flujo ─────────────────────────────
-  private async cargarPaises(): Promise<void> {
-    try {
-      const res = await fetch('https://restcountries.com/v3.1/all?fields=cca2,name');
-      const data = await res.json();
-      const mapeados = data
-        .map((p: any) => ({ code: p.cca2, name: p.name.common }))
-        .filter((p: Pais) => p.code && p.name)
-        .sort(() => Math.random() - 0.5);
-      
-      this.todosPaises.set(mapeados);
-    } catch (err) {
-      console.error('Error cargando países:', err);
-    }
-  }
-
+  
   iniciarPartida(): void {
     this.preguntaActual.set(0);
     this.correctas.set(0);

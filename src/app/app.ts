@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router'; 
 import { CommonModule } from '@angular/common'; 
 import { GithubService } from './services/github/github'; 
-import { AuthService, UsuarioSesion } from './services/auth/auth';
+import { AuthService, } from './services/auth/auth';
+import { UsuarioSesion } from './models/usuario.model';
 
 @Component({
   selector: 'app-root',

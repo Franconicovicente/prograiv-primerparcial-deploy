@@ -2,11 +2,8 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { UsuarioSesion } from '../../models/usuario.model';
 
-export interface UsuarioSesion {
-  nombre: string;
-  email: string;
-}
 
 @Injectable({
   providedIn: 'root'
