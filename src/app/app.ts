@@ -51,6 +51,8 @@ export class AppComponent implements OnInit {
       }
     }
 
+    
+
   async onCerrarSesion(): Promise<void> {
     await this.authService.cerrarSesion();
   }
