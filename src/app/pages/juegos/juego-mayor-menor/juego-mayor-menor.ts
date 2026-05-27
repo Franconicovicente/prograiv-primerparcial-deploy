@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NgIf, NgClass } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, NgZone, signal, computed } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth';
 import { PartidaMayorMenorService } from '../../../services/partida-mayor-menor/partida-mayor-menor';
 import { Router } from '@angular/router';
@@ -20,7 +19,6 @@ function generarBaraja(): Carta[] {
       baraja.push({ valor: i + 1, palo, nombre: NOMBRES[i] });
     }
   }
-  // Fisher-Yates shuffle
   for (let i = baraja.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
@@ -31,42 +29,64 @@ function generarBaraja(): Carta[] {
 @Component({
   selector: 'app-mayor-menor',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   templateUrl: './juego-mayor-menor.html',
   styleUrls: ['./juego-mayor-menor.css']
 })
 export class MayorMenorComponent implements OnInit, OnDestroy {
+  // ── Inyecciones ──────────────────────────────────────────
   private authService = inject(AuthService);
   private partidaService = inject(PartidaMayorMenorService);
-  private router = inject(Router)
-  
-  // Baraja y cartas
+  private router = inject(Router);
+  private ngZone = inject(NgZone);
+
+  // ── Signals de Datos ─────────────────────────────────────
+  cartaActual = signal<Carta | null>(null);
+  cartaSiguiente = signal<Carta | null>(null);
+
+  // ── Signals de Estado ────────────────────────────────────
+  estado = signal<'jugando' | 'resultado' | 'fin'>('jugando');
+  ultimoResultado = signal<'correcto' | 'incorrecto' | null>(null);
+
+  // ── Signals de Estadísticas ──────────────────────────────
+  cartasAcertadas = signal<number>(0);
+  cartasTotales = signal<number>(0);
+  tiempoSegundos = signal<number>(0);
+  guardando = signal<boolean>(false);
+
+  // ── Propiedades Privadas e Inmutables ────────────────────
   private baraja: Carta[] = [];
-  cartaActual: Carta | null = null;
-  cartaSiguiente: Carta | null = null;
-  private ngZone = inject(NgZone)
-  private cdr = inject(ChangeDetectorRef);
-
-
-  // Estado
-  estado: 'jugando' | 'resultado' | 'fin' = 'jugando';
-  ultimoResultado: 'correcto' | 'incorrecto' | null = null;
-  acerto: boolean = false;
-
-  // Stats
-  cartasAcertadas: number = 0;
-  cartasTotales: number = 0;
   private indice: number = 1;
-
-  // Timer
-  tiempoSegundos: number = 0;
+  private erroresConsecutivos: number = 0;
   private intervalo: any;
-
-  // Guardado
   private userId: string = '';
-  guardando: boolean = false;
-  yaGuardado: boolean = false;
+  private yaGuardado: boolean = false;
+  private acerto: boolean = false;
 
+  // ── Computed Props (Getters) ─────────────────────────────
+  tiempoFormateado = computed<string>(() => {
+    const total = this.tiempoSegundos();
+    const m = Math.floor(total / 60).toString().padStart(2, '0');
+    const s = (total % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  });
+
+  esRoja = computed<boolean>(() => {
+    const actual = this.cartaActual();
+    return actual?.palo === '♥' || actual?.palo === '♦';
+  });
+
+  porcentajeAciertos = computed<number>(() => {
+    const totales = this.cartasTotales();
+    if (totales === 0) return 0;
+    return Math.round((this.cartasAcertadas() / totales) * 100);
+  });
+
+  cartasRestantes = computed<number>(() => {
+    return this.baraja.length - this.indice + 1;
+  });
+
+  // ── Ciclo de Vida ────────────────────────────────────────
   async ngOnInit(): Promise<void> {
     this.userId = (await this.authService.getUserId()) ?? '';
     this.iniciarPartida();
@@ -76,106 +96,112 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
     this.detenerTimer();
   }
 
+  // ── Flujo Principal del Juego ────────────────────────────
   iniciarPartida(): void {
     this.baraja = generarBaraja();
-    this.cartaActual = this.baraja[0];
-    this.cartaSiguiente = null;
+    this.cartaActual.set(this.baraja[0]);
+    this.cartaSiguiente.set(null);
     this.indice = 1;
-    this.cartasAcertadas = 0;
-    this.cartasTotales = 0;
-    this.estado = 'jugando';
-    this.ultimoResultado = null;
+    this.erroresConsecutivos = 0;
+    this.cartasAcertadas.set(0);
+    this.cartasTotales.set(0);
+    this.estado.set('jugando');
+    this.ultimoResultado.set(null);
     this.yaGuardado = false;
-    this.tiempoSegundos = 0;
+    this.tiempoSegundos.set(0);
     this.detenerTimer();
     this.iniciarTimer();
   }
 
   elegir(eleccion: 'mayor' | 'menor'): void {
-    if (this.estado !== 'jugando') return;
+    if (this.estado() !== 'jugando') return;
 
-    this.cartaSiguiente = this.baraja[this.indice];
-    this.cartasTotales++;
+    const siguiente = this.baraja[this.indice];
+    this.cartaSiguiente.set(siguiente);
+    this.cartasTotales.update(t => t + 1);
 
-    const esM = this.cartaSiguiente.valor > this.cartaActual!.valor;
-    const esMen = this.cartaSiguiente.valor < this.cartaActual!.valor;
-    const empate = this.cartaSiguiente.valor === this.cartaActual!.valor;
+    const actual = this.cartaActual();
+    const esM = siguiente.valor > actual!.valor;
+    const esMen = siguiente.valor < actual!.valor;
+    const empate = siguiente.valor === actual!.valor;
 
     if (empate) {
-      // Empate cuenta como incorrecto
       this.acerto = false;
     } else {
       this.acerto = (eleccion === 'mayor' && esM) || (eleccion === 'menor' && esMen);
     }
 
-    if (this.acerto) this.cartasAcertadas++;
-    this.ultimoResultado = this.acerto ? 'correcto' : 'incorrecto';
-    this.estado = 'resultado';
+    if (this.acerto) {
+      this.cartasAcertadas.update(a => a + 1);
+    }
 
-    // Mostrar resultado brevemente y continuar
+    this.ultimoResultado.set(this.acerto ? 'correcto' : 'incorrecto');
+    this.estado.set('resultado');
+
     this.ngZone.runOutsideAngular(() => {
-    setTimeout(() => {
-      this.ngZone.run(() => {
-        this.avanzar();
-        this.cdr.detectChanges();
-      });
-    }, 1200);
-  });
-  
+      setTimeout(() => {
+        this.ngZone.run(() => {
+          this.avanzar();
+        });
+      }, 1200);
+    });
   }
 
   private avanzar(): void {
-    this.cartaActual = this.cartaSiguiente;
+    this.cartaActual.set(this.cartaSiguiente());
     this.indice++;
 
     if (this.indice >= this.baraja.length) {
       this.terminarPartida('ganó');
     } else if (!this.acerto) {
-      // 3 errores seguidos no, pero si querés podés cambiar la lógica
-      // Por ahora: se pierde si falla 3 veces
       this.erroresConsecutivos++;
       if (this.erroresConsecutivos >= 3) {
         this.terminarPartida('perdió');
         return;
       }
-      this.estado = 'jugando';
-      this.ultimoResultado = null;
+      this.estado.set('jugando');
+      this.ultimoResultado.set(null);
     } else {
       this.erroresConsecutivos = 0;
-      this.estado = 'jugando';
-      this.ultimoResultado = null;
+      this.estado.set('jugando');
+      this.ultimoResultado.set(null);
     }
   }
 
-  private erroresConsecutivos: number = 0;
-
+  // ── Persistencia y Salida ────────────────────────────────
   private async terminarPartida(resultado: 'ganó' | 'perdió'): Promise<void> {
     this.detenerTimer();
-    this.estado = 'fin';
+    this.estado.set('fin');
     if (this.yaGuardado) return;
     this.yaGuardado = true;
-    this.guardando = true;
+    this.guardando.set(true);
 
     try {
       await this.partidaService.guardarPartida({
         user_id: this.userId,
-        cartas_acertadas: this.cartasAcertadas,
-        cartas_totales: this.cartasTotales,
+        cartas_acertadas: this.cartasAcertadas(),
+        cartas_totales: this.cartasTotales(),
         resultado,
-        tiempo_segundos: this.tiempoSegundos
+        tiempo_segundos: this.tiempoSegundos()
       });
     } catch (err) {
       console.error('Error al guardar partida:', err);
     } finally {
-      this.guardando = false;
+      this.guardando.set(false);
     }
   }
 
+  salir(): void {
+    this.router.navigate(['/home']);
+  }
+
+  // ── Lógica de Timers ─────────────────────────────────────
   private iniciarTimer(): void {
-      this.ngZone.runOutsideAngular(() => {
+    this.ngZone.runOutsideAngular(() => {
       this.intervalo = setInterval(() => {
-        this.tiempoSegundos++;
-        this.cdr.detectChanges();
+        this.ngZone.run(() => {
+          this.tiempoSegundos.update(t => t + 1);
+        });
       }, 1000);
     });
   }
@@ -185,30 +211,5 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalo);
       this.intervalo = null;
     }
-  }
-
-  salir(){
-    this.router.navigate(['/home'])
-  }
-
-  // ── Getters ──────────────────────────────
-
-  get tiempoFormateado(): string {
-    const m = Math.floor(this.tiempoSegundos / 60).toString().padStart(2, '0');
-    const s = (this.tiempoSegundos % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  }
-
-  get esRoja(): boolean {
-    return this.cartaActual?.palo === '♥' || this.cartaActual?.palo === '♦';
-  }
-
-  get porcentajeAciertos(): number {
-    if (this.cartasTotales === 0) return 0;
-    return Math.round((this.cartasAcertadas / this.cartasTotales) * 100);
-  }
-
-  get cartasRestantes(): number {
-    return this.baraja.length - this.indice + 1;
   }
 }

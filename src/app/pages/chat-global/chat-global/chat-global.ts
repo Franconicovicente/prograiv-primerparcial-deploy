@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, inject, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, NgZone } from '@angular/core';
-import { NgFor, NgIf, DatePipe } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, ViewChild, ElementRef, AfterViewChecked, NgZone, signal, computed } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth';
 import { ChatService, Mensaje } from '../../../services/chat-global/chat-global';
@@ -7,43 +7,48 @@ import { ChatService, Mensaje } from '../../../services/chat-global/chat-global'
 @Component({
   selector: 'app-chat-global',
   standalone: true,
-  imports: [NgFor, NgIf, DatePipe, FormsModule],
+  imports: [DatePipe, FormsModule],
   templateUrl: './chat-global.html',
   styleUrls: ['./chat-global.css']
 })
 export class ChatGlobalComponent implements OnInit, OnDestroy, AfterViewChecked {
+  // ── Inyecciones ──────────────────────────────────────────
   private authService = inject(AuthService);
   private chatService = inject(ChatService);
-  private cdr = inject(ChangeDetectorRef);
-  private ngZone = inject(NgZone)
+  private ngZone = inject(NgZone);
 
+  // ── Referencias Elementos ────────────────────────────────
   @ViewChild('messagesEnd') messagesEnd!: ElementRef;
 
-  mensajes: Mensaje[] = [];
-  nuevoMensaje: string = '';
-  enviando: boolean = false;
-  cargando: boolean = true;
-  error: string | null = null;
+  // ── Signals de Datos ─────────────────────────────────────
+  mensajes = signal<Mensaje[]>([]);
+  nuevoMensaje = signal<string>('');
 
-  userId: string = '';
+  // ── Signals de Estado ────────────────────────────────────
+  enviando = signal<boolean>(false);
+  cargando = signal<boolean>(true);
+  error = signal<string | null>(null);
+  userId = signal<string>('');
+
+  // ── Propiedades Privadas e Inmutables ────────────────────
   private nombreUsuario: string = '';
   private canal: any;
   private shouldScroll: boolean = false;
 
+  // ── Ciclo de Vida ────────────────────────────────────────
   async ngOnInit(): Promise<void> {
     const id = await this.authService.getUserId();
-  console.log('getUserId devolvió:', id);
-  this.userId = id ?? '';
+    this.userId.set(id ?? '');
+
     this.authService.session$.subscribe(usuario => {
-    if (usuario) this.nombreUsuario = usuario.nombre;
-  });
+      if (usuario) this.nombreUsuario = usuario.nombre;
+    });
 
-  // Después el userId directo desde Supabase
-  this.userId = (await this.authService.getUserId()) ?? '';
-  this.cdr.detectChanges()
+    const idSupabase = await this.authService.getUserId();
+    this.userId.set(idSupabase ?? '');
 
-  await this.cargarMensajes();
-  this.suscribirRealtime();
+    await this.cargarMensajes();
+    this.suscribirRealtime();
   }
 
   ngOnDestroy(): void {
@@ -59,49 +64,47 @@ export class ChatGlobalComponent implements OnInit, OnDestroy, AfterViewChecked 
     }
   }
 
+  // ── Lógica de Datos y Realtime ───────────────────────────
   private async cargarMensajes(): Promise<void> {
     try {
-      this.mensajes = await this.chatService.getMensajes();
+      const datos = await this.chatService.getMensajes();
+      this.mensajes.set(datos);
       this.shouldScroll = true;
     } catch (err) {
-      this.error = 'No se pudieron cargar los mensajes.';
+      this.error.set('No se pudieron cargar los mensajes.');
     } finally {
-      this.cargando = false;
-      this.cdr.detectChanges()
+      this.cargando.set(false);
     }
   }
 
   private suscribirRealtime(): void {
     this.canal = this.chatService.suscribirMensajes((mensaje) => {
-    this.ngZone.run(() => {
-      const existe = this.mensajes.some(m => m.id === mensaje.id);
-      if (!existe) {
-        this.mensajes.push(mensaje);
-        this.shouldScroll = true;
-        this.cdr.detectChanges();
-      }
+      this.ngZone.run(() => {
+        const existe = this.mensajes().some(m => m.id === mensaje.id);
+        if (!existe) {
+          this.mensajes.update(lista => [...lista, mensaje]);
+          this.shouldScroll = true;
+        }
+      });
     });
-  });
   }
 
+  // ── Acciones de Usuario ──────────────────────────────────
   async enviar(): Promise<void> {
-    console.log('userId:', this.userId);
-  console.log('nombreUsuario:', this.nombreUsuario);
-  console.log('mensaje:', this.nuevoMensaje);
-    const texto = this.nuevoMensaje.trim();
-    if (!texto || this.enviando || !this.userId) return;
+    const texto = this.nuevoMensaje().trim();
+    const idActual = this.userId();
+    if (!texto || this.enviando() || !idActual) return;
 
-    this.enviando = true;
-    this.nuevoMensaje = '';
+    this.enviando.set(true);
+    this.nuevoMensaje.set('');
 
     try {
-      await this.chatService.enviarMensaje(this.userId, this.nombreUsuario, texto);
+      await this.chatService.enviarMensaje(idActual, this.nombreUsuario, texto);
     } catch (err) {
       console.error('Error al enviar:', err);
-      this.nuevoMensaje = texto; // Restaurar si falla
+      this.nuevoMensaje.set(texto);
     } finally {
-      this.cdr.detectChanges()
-      this.enviando = false;
+      this.enviando.set(false);
     }
   }
 
@@ -112,6 +115,7 @@ export class ChatGlobalComponent implements OnInit, OnDestroy, AfterViewChecked 
     }
   }
 
+  // ── Helpers de UI y Scroll ───────────────────────────────
   private scrollAbajo(): void {
     try {
       this.messagesEnd?.nativeElement?.scrollIntoView({ behavior: 'smooth' });
@@ -119,6 +123,6 @@ export class ChatGlobalComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   esMio(mensaje: Mensaje): boolean {
-    return mensaje.user_id === this.userId;
+    return mensaje.user_id === this.userId();
   }
 }
