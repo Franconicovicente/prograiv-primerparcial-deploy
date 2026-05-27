@@ -2,14 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-export interface PerfilSimplificado {
-  name: string;
-  avatar_url: string;
-  bio: string;
-  public_repos: number;
-}
-
+import { PerfilSimplificado } from '../../models/github.model';
 
 
 @Injectable({

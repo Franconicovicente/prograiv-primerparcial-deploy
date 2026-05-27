@@ -1,13 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService } from '../auth/auth';
-
-export interface Mensaje {
-  id?: string;
-  user_id: string;
-  nombre_usuario: string;
-  contenido: string;
-  created_at?: string;
-}
+import { Mensaje } from '../../models/chat-model';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {

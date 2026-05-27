@@ -1,12 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService } from '../auth/auth';
+import { PartidaJuegoPropio } from '../../models/partidas.model';
 
-export interface PartidaJuegoPropio {
-  user_id: string;
-  puntuacion: number;
-  lineas_completadas: number;
-  nivel_alcanzado: number;
-}
 
 @Injectable({ providedIn: 'root' })
 export class PartidaJuegoPropioService {

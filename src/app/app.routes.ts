@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
     {
@@ -36,6 +37,14 @@ export const routes: Routes = [
     {
         path: 'juego-propio',
         loadComponent: () => import('./pages/juegos/juego-propio/juego-propio/juego-propio').then((m) => m.JuegoPropioComponent)
+    },
+    {
+        path: 'encuesta',
+        loadComponent: () => import('./pages/encuesta/encuesta/encuesta').then((m) => m.EncuestaComponent)
+    },
+    {
+        path: 'resultado-encuestas',
+        loadComponent: () => import('./pages/resultado-encuestas/resultado-encuestas/resultado-encuestas').then((m) => m.ResultadosEncuestaComponent)
     },
     {
         path: '',

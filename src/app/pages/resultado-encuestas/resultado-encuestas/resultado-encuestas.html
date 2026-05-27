@@ -1,0 +1,88 @@
+<div class="resultados-wrapper">
+
+  <div class="page-header" @fadeInUp>
+    <div class="header-left">
+      <span class="admin-badge">🔐 Admin</span>
+      <h1>Resultados de Encuestas</h1>
+      <p>Respuestas de todos los usuarios registrados.</p>
+    </div>
+    <a routerLink="/home" class="btn-back">← Volver</a>
+  </div>
+
+  @if (cargando()) {
+    <div class="loading-area" @fadeInUp>
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <p>Cargando encuestas...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-banner" @fadeInUp>{{ error() }}</div>
+  }
+
+  @if (!cargando() && encuestas().length === 0) {
+    <div class="empty-state" @fadeInUp>
+      <span>📋</span>
+      <p>Todavía no hay encuestas respondidas.</p>
+    </div>
+  }
+
+  @if (!cargando() && encuestas().length > 0) {
+    <div class="stats-row" @fadeInUp>
+      <div class="stat-card">
+        <span class="stat-num">{{ encuestas().length }}</span>
+        <span class="stat-label">Respuestas totales</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">
+          {{ encuestas()[0]?.created_at | slice:0:10 }}
+        </span>
+        <span class="stat-label">Última respuesta</span>
+      </div>
+    </div>
+
+    <div class="table-container" @staggerRows>
+      @for (e of encuestas(); track e.id) {
+        <div class="encuesta-row row-animated">
+          <div class="row-header" (click)="toggleExpandir(e.id)">
+            <div class="row-left">
+              <div class="row-avatar">{{ e.nombre.charAt(0) }}</div>
+              <div class="row-info">
+                <span class="row-name">{{ e.nombre }} {{ e.apellido }}</span>
+                <span class="row-meta">{{ e.edad }} años · {{ e.telefono }}</span>
+              </div>
+            </div>
+            <div class="row-right">
+              <span class="row-date">{{ e.created_at | slice:0:10 }}</span>
+              <span class="row-toggle">{{ estaExpandida(e.id) ? '▲' : '▼' }}</span>
+            </div>
+          </div>
+
+          @if (estaExpandida(e.id)) {
+            <div class="row-detail" @fadeInUp>
+              <div class="detail-item">
+                <span class="detail-label">Frecuencia de juego</span>
+                <span class="detail-value">{{ e.frecuencia_juego }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Géneros preferidos</span>
+                <div class="tags">
+                  @for (g of e.genero_preferido; track g) {
+                    <span class="tag">{{ g }}</span>
+                  }
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">¿Recomendaría la plataforma?</span>
+                <span class="detail-value">{{ e.recomienda }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+</div>

@@ -1,5 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core'; // 👈 Importamos signal
-import { GithubService, PerfilSimplificado } from '../../services/github/github'; 
+import { Component, OnInit, signal } from '@angular/core'; 
+import { GithubService } from '../../services/github/github';
+import { PerfilSimplificado } from '../../models/github.model';
 
 @Component({
   selector: 'app-quiensoy',

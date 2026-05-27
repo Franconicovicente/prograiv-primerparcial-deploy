@@ -2,11 +2,8 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { UsuarioSesion } from '../../models/usuario.model';
 
-export interface UsuarioSesion {
-  nombre: string;
-  email: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +12,8 @@ export class AuthService {
   private supabase: SupabaseClient = createClient('https://bscfusqgtnusravgrmyf.supabase.co', 
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzY2Z1c3FndG51c3JhdmdybXlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNjQzMTQsImV4cCI6MjA5NDc0MDMxNH0.iNZ36fzmhpJfskGrsRXTUyEXeV49Ig8PoZAXxhGa1Ds');
 
+
+  // register
   registrarUsuario(datosRegistro: any): Observable<any> {
     const { email, password, nombre, apellido, edad } = datosRegistro;
 
@@ -51,6 +50,8 @@ export class AuthService {
     );
   }
 
+  // iniciar sesion
+
   iniciarSesion(credenciales: any): Observable<any> {
     const { email, password } = credenciales;
 
@@ -66,6 +67,7 @@ export class AuthService {
     );
   }
 
+  // mostrar usuario logeado
   private usuarioLogueado$ = new BehaviorSubject<UsuarioSesion | null>(null);
 
   get session$(): Observable<UsuarioSesion | null> {
@@ -86,6 +88,7 @@ export class AuthService {
   async cerrarSesion(): Promise<void>{
     await this.supabase.auth.signOut();
     this.usuarioLogueado$.next(null); 
+    window.location.href = '/home'
   }
 
   async getUserId(): Promise<string | null> {

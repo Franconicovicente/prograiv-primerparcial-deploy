@@ -35,7 +35,7 @@
   @if (!cargando()) {
     <div class="table-wrapper">
 
-      @if (rankingActivo.length >= 3) {
+      @if (rankingActivo().length >= 3) {
         <div class="podio">
           @if (rankingActivo()[1]) {
             <div class="podio-item podio-2">
@@ -67,7 +67,7 @@
         </div>     
       }
 
-      @if (rankingActivo.length > 0) {
+      @if (rankingActivo().length > 0) {
         <div class="table-container">
           <table class="ranking-table">
             <thead>
@@ -122,7 +122,7 @@
           </table>
         </div>
       }
-    </div> } @if (!cargando && rankingActivo.length === 0) {
+    </div> } @if (!cargando() && rankingActivo().length === 0) {
     <div class="empty-state">
       <span class="empty-icon">🎮</span>
       <p>Todavía no hay partidas registradas para este juego.</p>

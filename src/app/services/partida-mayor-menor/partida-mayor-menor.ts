@@ -1,13 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService } from '../auth/auth';
-
-export interface PartidaMayorMenor {
-  user_id: string;
-  cartas_acertadas: number;
-  cartas_totales: number;
-  resultado: 'ganó' | 'perdió';
-  tiempo_segundos: number;
-}
+import { PartidaMayorMenor } from '../../models/partidas.model';
 
 @Injectable({ providedIn: 'root' })
 export class PartidaMayorMenorService {

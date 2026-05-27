@@ -1,0 +1,140 @@
+<div class="encuesta-wrapper">
+
+  <!-- Ya respondió -->
+  @if (yaRespondio()) {
+    <div class="already-card" @fadeInUp>
+      <span class="already-icon">✅</span>
+      <h2>¡Ya completaste la encuesta!</h2>
+      <p>Solo se puede responder una vez por usuario. Gracias por participar.</p>
+      <a routerLink="/home" class="btn-primary">Volver al inicio</a>
+    </div>
+  }
+
+  <!-- Enviado con éxito -->
+  @if (enviado()) {
+    <div class="success-card" @fadeInUp>
+      <span class="success-icon">🎉</span>
+      <h2>¡Encuesta enviada!</h2>
+      <p>Gracias por completar la encuesta. Tus respuestas fueron guardadas.</p>
+      <a routerLink="/home" class="btn-primary">Volver al inicio</a>
+    </div>
+  }
+
+  <!-- Formulario -->
+  @if (!yaRespondio() && !enviado()) {
+    <div class="form-container" @fadeInUp>
+
+      <div class="form-header">
+        <h1>Encuesta de satisfacción</h1>
+        <p>Completá el formulario para ayudarnos a mejorar la plataforma.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" @staggerFields novalidate>
+
+        <!-- Datos personales -->
+        <div class="section-title field-animated">Datos personales</div>
+
+        <div class="form-row two-col field-animated">
+          <div class="form-group">
+            <label class="form-label">NOMBRE</label>
+            <input type="text" formControlName="nombre" placeholder="Franco" class="form-input"
+              [class.input-error]="isInvalid('nombre')" />
+            @if (isInvalid('nombre')) {
+              <span class="error-msg" @slideIn>El nombre es requerido (mín. 2 caracteres).</span>
+            }
+          </div>
+          <div class="form-group">
+            <label class="form-label">APELLIDO</label>
+            <input type="text" formControlName="apellido" placeholder="Vicente" class="form-input"
+              [class.input-error]="isInvalid('apellido')" />
+            @if (isInvalid('apellido')) {
+              <span class="error-msg" @slideIn>El apellido es requerido (mín. 2 caracteres).</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row two-col field-animated">
+          <div class="form-group">
+            <label class="form-label">EDAD</label>
+            <input type="number" formControlName="edad" placeholder="25" class="form-input"
+              [class.input-error]="isInvalid('edad')" />
+            @if (isInvalid('edad')) {
+              <span class="error-msg" @slideIn>Debe ser mayor de 18 y menor de 99 años.</span>
+            }
+          </div>
+          <div class="form-group">
+            <label class="form-label">TELÉFONO</label>
+            <input type="text" formControlName="telefono" placeholder="1123456789" class="form-input"
+              [class.input-error]="isInvalid('telefono')" maxlength="10" />
+            @if (isInvalid('telefono')) {
+              <span class="error-msg" @slideIn>Solo números, máximo 10 caracteres.</span>
+            }
+          </div>
+        </div>
+
+        <!-- Pregunta 1: Radio -->
+        <div class="section-title field-animated">Preguntas</div>
+
+        <div class="form-group field-animated">
+          <label class="form-label">¿CON QUÉ FRECUENCIA JUGÁS VIDEOJUEGOS?</label>
+          <div class="radio-group">
+            @for (opcion of ['Todos los días', 'Varias veces por semana', 'Una vez por semana', 'Ocasionalmente', 'Casi nunca']; track opcion) {
+              <label class="radio-label">
+                <input type="radio" formControlName="frecuencia_juego" [value]="opcion" class="radio-input" />
+                <span class="radio-custom"></span>
+                <span>{{ opcion }}</span>
+              </label>
+            }
+          </div>
+          @if (isInvalid('frecuencia_juego')) {
+            <span class="error-msg" @slideIn>Seleccioná una opción.</span>
+          }
+        </div>
+
+        <!-- Pregunta 2: Checkboxes -->
+        <div class="form-group field-animated" formGroupName="generos">
+          <label class="form-label">¿QUÉ GÉNERO DE JUEGOS PREFERÍS? (podés elegir varios)</label>
+          <div class="checkbox-group">
+            @for (genero of generos; track genero) {
+              <label class="checkbox-label">
+                <input type="checkbox" [formControlName]="genero" class="checkbox-input" />
+                <span class="checkbox-custom"></span>
+                <span>{{ genero }}</span>
+              </label>
+            }
+          </div>
+          @if (generosSeleccionados.length === 0 && form.touched) {
+            <span class="error-msg" @slideIn>Seleccioná al menos un género.</span>
+          }
+        </div>
+
+        <!-- Pregunta 3: Select -->
+        <div class="form-group field-animated">
+          <label class="form-label">¿RECOMENDARÍAS ESTA PLATAFORMA?</label>
+          <select formControlName="recomienda" class="form-select"
+            [class.input-error]="isInvalid('recomienda')">
+            <option value="" disabled>Seleccioná una opción</option>
+            <option value="Definitivamente sí">Definitivamente sí</option>
+            <option value="Probablemente sí">Probablemente sí</option>
+            <option value="No estoy seguro">No estoy seguro</option>
+            <option value="Probablemente no">Probablemente no</option>
+            <option value="Definitivamente no">Definitivamente no</option>
+          </select>
+          @if (isInvalid('recomienda')) {
+            <span class="error-msg" @slideIn>Seleccioná una opción.</span>
+          }
+        </div>
+
+        @if (error()) {
+          <div class="error-banner" @slideIn>{{ error() }}</div>
+        }
+
+        <button type="submit" class="btn-submit field-animated" [disabled]="enviando()">
+          @if (enviando()) { Enviando... } @else { Enviar encuesta → }
+        </button>
+
+      </form>
+    </div>
+  }
+
+</div>

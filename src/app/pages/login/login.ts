@@ -31,6 +31,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  loginRapido(email: string, password: string): void {
+  this.loginForm.setValue({ email, password });
+  this.onSubmit();
+}
+
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.authService.iniciarSesion(this.loginForm.value).subscribe({

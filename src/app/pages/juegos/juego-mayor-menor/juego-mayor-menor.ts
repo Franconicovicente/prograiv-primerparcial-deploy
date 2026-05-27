@@ -2,12 +2,9 @@ import { Component, OnInit, OnDestroy, inject, NgZone, signal, computed } from '
 import { AuthService } from '../../../services/auth/auth';
 import { PartidaMayorMenorService } from '../../../services/partida-mayor-menor/partida-mayor-menor';
 import { Router } from '@angular/router';
+import { Carta } from '../../../models/mayor-menor-model';
 
-export interface Carta {
-  valor: number;
-  palo: '♠' | '♥' | '♦' | '♣';
-  nombre: string;
-}
+
 
 const PALOS: Carta['palo'][] = ['♠', '♥', '♦', '♣'];
 const NOMBRES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
