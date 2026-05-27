@@ -28,7 +28,7 @@ export class PreguntadosComponent implements OnInit, OnDestroy {
   private paisesService = inject(PaisesService)
 
   // ── Signals de Datos ─────────────────────────────────────
-  todosPaises = signal<Pais[]>([]);
+  todosPaises = computed(() => this.paisesService.paises())
   paisActual = signal<Pais | null>(null);
   opciones = signal<Pais[]>([]);
   svgPath = signal<string>('');
